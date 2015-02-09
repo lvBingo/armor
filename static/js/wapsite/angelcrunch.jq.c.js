@@ -207,7 +207,30 @@ $.Angelcrunch.notificationInit = function () {
     $close.click(function () {
         $(this).closest(className.bar).fadeOut(240);
     });
-}
+};
+
+(function () {
+    var className = {
+        container: ".mentos-container",
+        checkbox: ".mentos-container :checkbox",
+        // State
+        beChecked: "checked"
+    };
+    var _changeCheckboxModuleState = function () {
+        var $container = $($(this).closest(className.container));
+        if ($(this).is(":checked")) $container.addClass(className.beChecked);
+        else $container.removeClass(className.beChecked);
+    };
+
+    $.Angelcrunch.formModules = function () {
+        var $container, $checkbox;
+        $checkbox = $(className.checkbox);
+        $checkbox.change(function () {
+            _changeCheckboxModuleState.call(this);
+        })
+
+    }
+}).call(this);
 
 
 // Module Initialize
@@ -215,4 +238,5 @@ $(function () {
     $.Angelcrunch.back2top();
     $.Angelcrunch.dialogueConfirm();
     $.Angelcrunch.notificationInit();
+    $.Angelcrunch.formModules();
 })

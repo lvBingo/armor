@@ -57,6 +57,26 @@ p:empty {
   display:none;
 }
 
+/**************************
+  Common State of Elements
+  **************************/
+
+body {
+  background:#F2F2F2;
+}
+
+.details {
+  width:100%;
+  background:#FFF;
+}
+/* pc */
+@media only screen and (min-width: 998px) {
+  .details {
+    width:360px;    /* Logic resolution with iPhone6 */
+    margin:0 auto;
+  }
+}
+
 /******************
         Fonts
   ******************/
@@ -367,26 +387,6 @@ p.avatar img {
   transition:background-color 0.2s linear;
 }
 
-/**************************
-  Common State of Elements
-  **************************/
-
-body {
-  background:#F2F2F2;
-}
-
-.details {
-  width:100%;
-  background:#FFF;
-}
-/* pc */
-@media only screen and (min-width: 998px) {
-  .details {
-    width:360px;    /* Logic resolution with iPhone6 */
-    margin:0 auto;
-  }
-}
-
 /**********************
      Slider Module
   **********************/
@@ -469,7 +469,168 @@ body {
   cursor:pointer;
 }
 
-/* Other */
+
+/***********************
+       Form Modules
+  ***********************/
+
+label {
+  display:inline-block;
+  width:100%;
+  margin-bottom:4px;
+}
+
+label span {
+  position:absolute;
+  display:block;
+  line-height:52px;
+  margin-left:3.4%;
+}
+
+@media only screen and (min-width: 748px) {
+  label span {
+    margin-left:2.2%;
+  }
+}
+
+@media only screen and (min-width: 998px){
+  label span {
+    margin-left:1.1%;
+  }
+}
+
+label > i {
+  display:inline-block;
+  width:100%;
+  height:50px;
+  background:#F5F5F5;
+}
+
+label > i input {
+  display:inline-block;
+  width:202px;
+  height:32px;
+  font-size:16px;
+  line-height:32px;
+  margin-left:78px;
+  margin-top:9px;
+  border:none;
+  background-color:transparent;
+}
+
+label > i input:focus {
+  border:none;
+  box-shadow:none;
+}
+
+label > i input[type=password] {
+  font-size:14px;
+}
+
+label.has-textarea > i {
+  height:98px;
+}
+
+label > i textarea {
+  width:262px;
+  height:78px;
+  font-size:14px;
+  margin-left:78px;
+  margin-top:9px;
+  padding:8px 0;
+  border:none;
+  resize:none;
+  background-color:transparent;
+}
+@media only screen and (max-width: 370px) {
+  label > i textarea {
+    width:240px;
+  }
+}
+@media only screen and (max-width: 340px) {
+  label > i textarea {
+    width:222px;
+  }
+}
+@media only screen and (max-width: 321px) {
+  label > i textarea {
+    width:202px;
+  }
+}
+
+.mentos-container {
+  -ms-user-select:none;
+  -moz-user-select:none;
+  -webkit-user-select:none;
+  user-select:none;
+}
+
+.mentos-container .label {
+  display:block;
+  width:auto;
+  margin:0;
+}
+
+.mentos-container .tracks {
+  position:relative;
+  display:block;
+  width:36px;
+  height:22px;
+  padding:1px;
+  border-radius:4px;
+  background:#DDD;
+  cursor:pointer;
+}
+
+.mentos-container .slider-button {
+  position:relative;
+  display:block;
+  width:20px;
+  height:20px;
+  font-size:14px;
+  text-align:center;
+  line-height:20px;
+  margin-left:0;
+  border-radius:3px;
+  background:#FFF;
+  transition:margin-left 0.2s linear;
+}
+
+.mentos-container .slider-button i:last-child {
+  display:none;
+}
+
+.mentos-container.checked .tracks {
+  background:#5CB85C;
+}
+
+.mentos-container.checked .slider-button {
+  margin-left:14px;
+  transition:margin-left 0.2s linear;
+}
+
+.mentos-container.checked .slider-button i:first-child {
+  display:none;
+}
+
+.mentos-container.checked .slider-button i:last-child {
+  display:block;
+  line-height:22px;
+  height:20px;
+  color:#5cb85c;
+  padding-left:1px;
+  background:url(/static/images/wapsite/cssimage/slider-on.png) 4.5px center no-repeat scroll;
+  background-size:12px;
+}
+
+.mentos-container input {
+  position:absolute;
+  opacity:0;
+  z-index:99;
+}
+
+
+/* Others */
 
 .banner-footer {
   margin-top:45px;

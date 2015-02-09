@@ -1,0 +1,62 @@
+﻿/*/
+/*
+/* Rank: 3
+/* Standard：Google
+/*
+/*/
+
+.invest-info .needs {
+  background-color:#FFF;
+}
+
+.addition-agreement {
+  display:inline-block;
+  width:100%;
+  padding:0 3.8% 0 5.5%;
+  margin:22px 0;
+}
+
+.addition-agreement p {
+  width:278px;
+  float:left;
+  font-size:12px;
+}
+
+@media only screen and (max-width:370px ) {
+  .addition-agreement p {
+    width:232px;
+  }
+}
+
+@media only screen and (max-width:348px ) {
+  .addition-agreement p {
+    width:220px;
+  }
+}
+
+@media only screen and (max-width:318px ) {
+  .addition-agreement p {
+    width:210px;
+  }
+}
+
+.addition-agreement p a {
+  font-size:12px;
+  font-weight:700;
+  line-height:16px;
+}
+
+.addition-agreement .modules {
+  float:right;
+  margin-top:5px;
+}
+
+.banner-footer {
+  margin-top:114px;
+}
+
+.branding-head h5 {
+  padding-top:14px;
+  font-size:28px;
+  margin-bottom:-14px;
+}
