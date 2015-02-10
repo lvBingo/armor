@@ -430,9 +430,10 @@ p.avatar img {
   display:none;
   position:fixed;
   width:98%;
-  height:26px;
+  height:30px;
   color:#FFF;
-  line-height:26px;
+  font-size:16px;
+  line-height:32px;
   padding:0 8px;
   top:8px;
   left:50%;
@@ -457,13 +458,14 @@ p.avatar img {
 }
 
 .notification .close {
-  width:16px;
-  height:16px;
+  width:18px;
+  height:18px;
   float:right;
-  line-height:14px;
+  font-size:14px;
+  line-height:16px;
   text-align:center;
   font-family:"Lucida Grande","Lucida Sans Unicode","Helvetica","Arial","Verdana","sans-serif";
-  margin-top:5px;
+  margin-top:6px;
   border-radius:100%;
   background:rgba(255,255,255,.15);
   cursor:pointer;

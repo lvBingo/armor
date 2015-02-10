@@ -53,6 +53,61 @@ $.documentClick = function (arr, fn) {
 // Angelcrunch namespace
 $.Angelcrunch = $.Angelcrunch || {};
 
+// Angelcrunch data set
+$.Angelcrunch.dataSet = $.Angelcrunch.dataSet || {};
+(function () {
+    var $dataSet = $.Angelcrunch.dataSet;
+
+    var _matchFields = function (data1, data2) {
+        //if (!(data1 && data2)) return false;
+            for (var K in data1)
+                data1[K] = data2[K] || "";
+            return data1;
+    }
+
+    $dataSet.Model = {
+        user: {
+            id: "",
+            access_token: ""
+        },
+        projectDetails: "",
+        projectBasicInformation: ""
+    };
+    $dataSet.operation = {
+        setUser: function (userData) {
+            $dataSet.Model.user = _matchFields($dataSet.Model.user, userData);
+        }
+    }
+}).call(this);
+
+(function () {
+    var analysis_comid = function () {
+        // Url format : http://12917928.tonghs.me/
+        // Discard   // Url format : http://localhost:46051/html/investor/details/38201920/?xx=xxx
+        var reg, href, matchStr, comid;
+        // reg = /\/details\/(\d+)\//i;
+        reg = /(\d+)\./;
+        href = location.href;
+        matchStr = href.match(reg);
+        comid = matchStr ? matchStr[1] : "";
+        return comid || "";
+    }
+
+    $.Angelcrunch.url = {
+        getQueryString: function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        },
+        getSource: function () {
+            return unescape(this.getQueryString("source"));
+        },
+        getComid: function () {
+            return this.getQueryString("comid") || "";
+        }
+    }
+}).call(this);
+
 $.Angelcrunch.regexStr = {
     phone: /^\d{11}$/,
     strict_validation_phone: /^(1(([35][0-9])|(47)|[8][0126789]))\d{8}$/,
@@ -74,12 +129,6 @@ $.Angelcrunch.preventRepeatClick = function ($this, time) {
         })($this), 600);
         return false;
     }
-};
-
-$.Angelcrunch.back2top = function () {
-    $(".st-top").click(function () {
-        $(document).scrollTop(0);
-    })
 };
 
 $.fn.keyCode_enter_bind = function (fn) {
@@ -126,6 +175,14 @@ $.fn.justNumber = function (Decimal) {
 $.fn.ReplacedVSHalfWidthSymbols = function (onlyText) {
     var htm = $(this).html().replace(/，/g, ", ").replace(/：/g, ": ").replace(/；/g, "; ");
     $(this).html(htm);
+};
+
+// Modules
+
+$.Angelcrunch.back2top = function () {
+    $(".st-top").click(function () {
+        $(document).scrollTop(0);
+    })
 };
 
 /**********************
@@ -190,25 +247,6 @@ $.fn.ReplacedVSHalfWidthSymbols = function (onlyText) {
     };
 }).call(this);
 
-$.Angelcrunch.dialogueConfirm = function () {
-    $("[data-confirm-dialogue]").click(function () {
-        if (confirm($(this).attr("data-confirm-dialogue"))) return true;
-        else return false;
-    });
-};
-
-$.Angelcrunch.notificationInit = function () {
-    var className = {
-        bar: ".notification"
-    }
-    var $bar, $close;
-    $bar = $(className.bar);
-    $close = $bar.find(".close");
-    $close.click(function () {
-        $(this).closest(className.bar).fadeOut(240);
-    });
-};
-
 (function () {
     var className = {
         container: ".mentos-container",
@@ -232,6 +270,34 @@ $.Angelcrunch.notificationInit = function () {
     }
 }).call(this);
 
+$.Angelcrunch.dialogueConfirm = function () {
+    $("[data-confirm-dialogue]").click(function () {
+        if (confirm($(this).attr("data-confirm-dialogue"))) return true;
+        else return false;
+    });
+};
+
+$.Angelcrunch.notificationInit = function () {
+    var className = {
+        bar: ".notification"
+    }
+    var $bar, $close;
+    $bar = $(className.bar);
+    $close = $bar.find(".close");
+    $close.click(function () {
+        $(this).closest(className.bar).fadeOut(240);
+    });
+};
+
+$.Angelcrunch.linkBtnInit = function () {
+    $("button[data-href]").click(function () {
+        var href = $(this).attr("data-href"),
+            _target = $(this).attr("data-target");
+        if (_target == "_blank") window.open(href);
+        else location.href = href;
+    });
+};
+
 
 // Module Initialize
 $(function () {
@@ -239,4 +305,5 @@ $(function () {
     $.Angelcrunch.dialogueConfirm();
     $.Angelcrunch.notificationInit();
     $.Angelcrunch.formModules();
+    $.Angelcrunch.linkBtnInit();
 })

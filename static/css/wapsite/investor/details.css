@@ -23,6 +23,7 @@ body {
 .branding-head .icon {
   display: inline-block;
   width: 100%;
+  min-height:93px;
   margin-top: 14px;
 }
 
@@ -31,6 +32,7 @@ body {
 }
 
 .branding-head .brand-info {
+  min-height:94px;
   margin-top: 4px;
   padding-bottom: 16px;
 }
