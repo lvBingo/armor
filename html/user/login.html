@@ -70,6 +70,11 @@
                     else return false;
                 };
 
+                var checkActive = function () {
+                    if (checkVal()) $btn.addClass(className.active);
+                    else $btn.removeClass(className.active);
+                };
+
                 $btn.click(function () {
                     if ($(this).hasClass(className.active)) {
                         var url = I.Ajax_login.url,
@@ -92,14 +97,16 @@
                     };
                     return false;
                 });
+
+
                 $account.keyup(function () {
-                    if (checkVal()) $btn.addClass(className.active);
-                    else $btn.removeClass(className.active);
+                    checkActive();
                 });
                 $pwd.keyup(function () {
-                    if (checkVal()) $btn.addClass(className.active);
-                    else $btn.removeClass(className.active);
+                    checkActive();
                 });
+                // Page load ready checked
+                checkActive();
             }
 
             return {

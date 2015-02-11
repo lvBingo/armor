@@ -37,95 +37,124 @@
     <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
 
     <script type="text/javascript" id="page-interactive-init">
-        var page = window.page || {};
-        page.MethodObj = function () { };
-        page.MethodObj.prototype = (function () {
-            var I = {
-                Ajax_details: {                     // Details
-                    url: "http://mobile.tonghs.me/v2/startup/detail",
-                    basic_data: {
-                    }
-                },
-                Ajax_details: {                     // Basic information
-                    url: "http://mobile.tonghs.me/v2/startup/base_info",
-                    basic_data: {
-                    }
+    var page = window.page || {};
+    page.MethodObj = function () { };
+    page.MethodObj.prototype = (function () {
+        var I = {
+            Ajax_details: {                     // Details
+                url: "http://mobile.tonghs.me/v2/startup/detail",
+                basic_data: {
                 }
+            },
+            Ajax_basic_information: {                     // Basic information
+                url: "http://mobile.tonghs.me/v2/startup/base_info",
+                basic_data: {
+                }
+            },
+            API: {
+                calculateInvesterEleWidth: ""
+            }
+        };
+
+        var waste_8912372 = function () {
+            var href, $loginBtn, loginBtnAttr;
+            $loginBtn = $("#login-btn");
+            href = escape(location.href),
+            loginBtnAttr = $loginBtn.attr("data-href");
+            if (loginBtnAttr) $loginBtn.attr("data-href", loginBtnAttr + href);
+        };
+
+        var waste_2012932 = function () {
+            var calculateItemWidth = function () {
+                var Factor = 3, Divisor = 3, itemNum;
+                var $container, $ul, $item;
+                $container = $("#invester"),
+                $ul = $container.find("ul");
+                $item = $ul.find("li");
+                itemNum = $item.length,
+                Divisor = itemNum > Factor ? Divisor : itemNum;
+                if (itemNum < 1) $container.hide();
+                $item.outerWidth((parseInt($container.width() / Divisor) - 0.2));
+            };
+            var initial = I.API.calculateInvesterEleWidth = function () {
+                calculateItemWidth();
+                $("#invester").calculateSliderModuleWidth({ rightSpaceWidth: 0 })
             };
 
-            var waste_8912372 = function () {
-                var href, $loginBtn, loginBtnAttr;
-                $loginBtn = $("#login-btn");
-                href = escape(location.href),
-                loginBtnAttr = $loginBtn.attr("data-href");
-                if (loginBtnAttr) $loginBtn.attr("data-href", loginBtnAttr + href);
-            };
+            window.onresize = initial;
+            initial();
+        };
 
-            var waste_9839213 = function () {
-                var $COOKIE = $.Angelcrunch.COOKIE;
-                // Basic information
-                (function () {
-                    var url = I.Ajax_basic_information.url,
-                        basic_data = I.Ajax_basic_information.basic_data,
+        var waste_9839213 = function () {
+            var $COOKIE, $details;
+            $COOKIE = $.Angelcrunch.COOKIE;
+            $details = $("#details");
+            // Basic information
+            (function () {
+                var url = I.Ajax_basic_information.url,
+                    basic_data = I.Ajax_basic_information.basic_data,
+                          type = "jsonp";
+                var _data = $.extend(true, {}, basic_data);
+                var comid = $.Angelcrunch.url.getComid();
+
+                if (comid) _data["com_id"] = comid;
+                $.post(url, _data, function (data) {
+                    $.Angelcrunch.dataSet.Model.projectBasicInformation = data;
+                    // avalonNS.model.basicInformation.data = data;
+                }, type);
+            }).call(this);
+
+            // Details information
+            (function () {
+                if ($COOKIE.operation.isLogin()) {
+                    var url = I.Ajax_details.url,
+                        basic_data = I.Ajax_details.basic_data,
                               type = "jsonp";
                     var _data = $.extend(true, {}, basic_data);
                     var comid = $.Angelcrunch.url.getComid();
+                    _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
+                    _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
 
-                    if (!comid) throw new Error("?comid=12813761");
-                    _data["com_id"] = comid;
-                    //_data["_url_"] = location.href;
+                    if (comid) _data["com_id"] = comid;
                     $.post(url, _data, function (data) {
-                         $.Angelcrunch.dataSet.Model.projectBasicInformation = data;
+                        $.Angelcrunch.dataSet.Model.projectDetails = data;
+                        // avalonNS.model.details.data = data;
+                        $details.addClass("logged");
+                        I.API.calculateInvesterEleWidth();
                     }, type);
-                }).call(this);
-
-                // Details information
-                (function () {
-                    if ($COOKIE.operation.isLogin()) {
-                        var url = I.Ajax_details.url,
-                            basic_data = I.Ajax_details.basic_data,
-                                  type = "jsonp";
-                        var _data = $.extend(true, {}, basic_data);
-                        var comid = $.Angelcrunch.url.getComid();
-                        _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
-                        _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
-
-                        if (!comid) throw new Error("?comid=12813761");
-                        _data["com_id"] = comid;
-                        //_data["_url_"] = location.href;
-                        $.post(url, _data, function (data) {
-                             $.Angelcrunch.dataSet.Model.projectDetails = data;
-                        }, type);
-                    }
-                }).call(this);
-            };
-
-            return {
-                attackEvent: function () {
-                    waste_9839213();
-                    waste_8912372();
-                },
-
-                pageLoad_Init: function () {
-                    $("#album").calculateSliderModuleWidth();
-                },
-
-                initial: function () {
-                    this.pageLoad_Init();
-                    this.attackEvent();
                 }
-            };
-        })();
+            }).call(this);
+        };
 
-        page.initialBridge = function () {
-            var o = new page.MethodObj();
-            o.initial();
-        }
+        return {
+            attackEvent: function () {
+                waste_2012932();
 
-        $(function () {
-            page.initialBridge();
-        })
+                waste_9839213();
+                waste_8912372();
+            },
+
+            pageLoad_Init: function () {
+                $("#album").calculateSliderModuleWidth();
+            },
+
+            initial: function () {
+                this.pageLoad_Init();
+                this.attackEvent();
+            }
+        };
+    })();
+
+    page.initialBridge = function () {
+        var o = new page.MethodObj();
+        o.initial();
+    }
+
+    $(function () {
+        page.initialBridge();
+    })
     </script>
+
 </head>
 <body>
     <div class="details">
@@ -292,31 +321,6 @@
                             </li>
                         </ul>
                     </div>
-                    <script id="calculateItemStyle">
-                        // By the way: Can use SCSS instead
-                        $(function () {
-                            (function () {
-                                var calculateItemWidth = function () {
-                                    var Factor = 3, Divisor = 3, itemNum;
-                                    var $container, $ul, $item;
-                                    $container = $("#invester"),
-                                    $ul = $container.find("ul");
-                                    $item = $ul.find("li");
-                                    itemNum = $item.length,
-                                    Divisor = itemNum > Factor ? Divisor : itemNum;
-                                    if (itemNum < 1) $container.hide();
-                                    $item.outerWidth(parseInt($container.width() / Divisor));
-                                };
-                                var initial = function () {
-                                    calculateItemWidth();
-                                    $("#invester").calculateSliderModuleWidth({ rightSpaceWidth: 0 })
-                                };
-
-                                window.onresize = initial;
-                                initial();
-                            }).call(this);
-                        });
-                    </script>
                 </article>
                 <article class="funds">
                     <h1>资金用途</h1>

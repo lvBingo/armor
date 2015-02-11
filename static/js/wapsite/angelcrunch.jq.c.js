@@ -28,6 +28,16 @@ Number.prototype.GetRandom = function () {
     return Math.floor(Math.random() * this)
 };
 
+// Convert text to html
+window.txt2html = function (txt) {
+    var html, txt_list, _i, _len;
+    txt_list = txt.split('\n');
+    html = '';
+    for (_i = 0, _len = txt_list.length; _i < _len; _i++)
+        html += "<p>" + txt_list[_i] + "</p>";
+    return html;
+};
+
 
 // 监测整个页面的click事件，如果事件源是数组中的值，那么将不会执行fn方法
 $.documentClick = function (arr, fn) {
@@ -108,6 +118,8 @@ $.Angelcrunch.dataSet = $.Angelcrunch.dataSet || {};
     }
 }).call(this);
 
+// Tools
+
 $.Angelcrunch.regexStr = {
     phone: /^\d{11}$/,
     strict_validation_phone: /^(1(([35][0-9])|(47)|[8][0126789]))\d{8}$/,
@@ -185,10 +197,14 @@ $.Angelcrunch.back2top = function () {
     })
 };
 
+$.Angelcrunch.changeTitleTxt = function (str) {
+    if (str) $("head title").text(str);
+};
+
 /**********************
       Slider module
   **********************/
-(function () {
+;(function () {
     var className = {
         container: ".slider-container",
         list: ".slider-container > ul",

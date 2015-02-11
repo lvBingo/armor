@@ -29,6 +29,7 @@ body {
 
 .branding-head .icon img {
   width: 25%;
+  border-radius:8px;
 }
 
 .branding-head .brand-info {
@@ -127,6 +128,7 @@ body {
 
 .article-list article h3 {
   font-size: 16px;
+  line-height:18px;
 }
 
 .invest-info article p,
@@ -173,6 +175,11 @@ body {
 /**********************
        Typesetting
   **********************/
+
+.article-list article.growing-up .item,
+.article-list article.milestone .item {
+  min-height: 34px;
+}
 
 .article-list .team .item {
   margin-bottom: 28px;
@@ -360,7 +367,7 @@ body {
 }
 
 .invest-info .invester .slider-container {
-  height: 160px;
+  height: 170px;
   padding: 0;
   background: #F5F5F5;
 }
@@ -420,7 +427,7 @@ body {
   height: 40px;
   font-size: 24px;
   line-height: 40px;
-  bottom: 0;
+  top: 130px;
   background: #EEE;
 }
 

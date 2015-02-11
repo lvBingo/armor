@@ -18,7 +18,10 @@ $.Angelcrunch = $.Angelcrunch || {};
         user_id: "uid",
         token: "access_token"
     };
+
     $COOKIE.settings = { expires: 7, path: "/", secure: false };
+    var domain = location.host.match(/.+\.(.+\.[a-zA-Z0-9]+)/);
+    if (domain) $COOKIE.settings.domain = domain[1];
 
     $COOKIE.operation = {
         setUserKey: function () {
