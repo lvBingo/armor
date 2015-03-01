@@ -13,9 +13,9 @@ String.prototype.trim = function () {
 String.prototype.keepDigital = function () {
     return this.replace(/\D/g, "");
 };
-String.keepDecimal = function () {
+String.prototype.keepDecimal = function () {
     var str;
-    str = this.replace(/[^\d\.]*/g, "")
+    str = this.replace(/[^\d\.]*/g, "");
     var reg = /^\.\d+/g;
     var reg2 = /\./g;
     if (reg.test(str))
@@ -70,15 +70,17 @@ $.Angelcrunch.dataSet = $.Angelcrunch.dataSet || {};
 
     var _matchFields = function (data1, data2) {
         //if (!(data1 && data2)) return false;
-            for (var K in data1)
-                data1[K] = data2[K] || "";
+        for (var K in data1)
+            data1[K] = data2[K] == 0 || data2[K] === false ? data2[K] :
+                       data2[K] ? data2[K] : "";
             return data1;
     }
 
     $dataSet.Model = {
         user: {
             id: "",
-            access_token: ""
+            access_token: "",
+            defaultpart: ""
         },
         projectDetails: "",
         projectBasicInformation: ""
@@ -114,6 +116,15 @@ $.Angelcrunch.dataSet = $.Angelcrunch.dataSet || {};
         },
         getComid: function () {
             return this.getQueryString("comid") || "";
+        },
+        getDetailsPageDomainURL: function () {
+            var domain = location.host.match(/.+\.(.+\.[a-zA-Z0-9]+)/);
+            return domain ? location.protocol+"//" + domain[0] : "";
+        },
+        isTestMode: function () {
+            if (this.getQueryString("test_mode"))
+                return true;
+            else return false;
         }
     }
 }).call(this);
@@ -189,17 +200,35 @@ $.fn.ReplacedVSHalfWidthSymbols = function (onlyText) {
     $(this).html(htm);
 };
 
-// Modules
+/********************
+       Utilities
+ ********************/
 
-$.Angelcrunch.back2top = function () {
+// Utilities for Angelcrunch
+$.Angelcrunch.Utilities = $.Angelcrunch.Utilities || {};
+
+$.Angelcrunch.Utilities.back2top = function () {
     $(".st-top").click(function () {
         $(document).scrollTop(0);
     })
 };
 
-$.Angelcrunch.changeTitleTxt = function (str) {
+$.Angelcrunch.Utilities.hidden2Visible = function () {
+    $(".hidden2Visible").show();
+};
+
+$.Angelcrunch.Utilities.changeTitleTxt = function (str) {
     if (str) $("head title").text(str);
 };
+
+$.Angelcrunch.Utilities.dialogueConfirm = function () {
+    $("[data-confirm-dialogue]").click(function () {
+        if (confirm($(this).attr("data-confirm-dialogue"))) return true;
+        else return false;
+    });
+};
+
+// Modules
 
 /**********************
       Slider module
@@ -211,24 +240,24 @@ $.Angelcrunch.changeTitleTxt = function (str) {
     };
     var defaultConfig = {
         toRight: false,
+        ignoreImg: false,
         rightSpaceWidth: 60
     }
 
     var _imgManipulation = function ($img, options) {
         var $container = $img.closest(className.container);
-        $img.hide();
-        $img.load(function () {
-            $img.show();
-            $container.calculateSliderModuleWidth(options);
-        })
+        $img[0].onload = function () {
+            $img.parents(className.container).calculateSliderModuleWidth(options);
+        };
     };
     var _calculationLogic = function (options) {
         var toRight, varible,
-            measure, globeWidth,
+            measure, globeWidth, ignoreImg,
             config;
         var $image;
         config = options || defaultConfig;
         toRight = config.toRight || defaultConfig.toRight,
+        ignoreImg = config.ignoreImg || defaultConfig.ignoreImg,
         varible = config.rightSpaceWidth != undefined ?
                   config.rightSpaceWidth : defaultConfig.rightSpaceWidth,
         measure = varible,
@@ -236,15 +265,15 @@ $.Angelcrunch.changeTitleTxt = function (str) {
 
         $(this).find("li").each(function () {
             $image = $(this).find("img");
-            if (!$(this).width() && $image && $image.attr("src")) {
+            if ($image.length && $image.attr("src") && !ignoreImg) {
                 _imgManipulation($image, toRight);
             };
             measure += $(this).outerWidth();
         });
-        if (((measure - varible) > globeWidth)) {
+
+        if (measure > globeWidth) {
             $(this).width(measure);
             if (toRight) $(this).parent().scrollLeft(measure);
-            else $(this).parent().scrollLeft(0);
         }
     };
     // Group Method
@@ -282,16 +311,9 @@ $.Angelcrunch.changeTitleTxt = function (str) {
         $checkbox.change(function () {
             _changeCheckboxModuleState.call(this);
         })
+    };
 
-    }
 }).call(this);
-
-$.Angelcrunch.dialogueConfirm = function () {
-    $("[data-confirm-dialogue]").click(function () {
-        if (confirm($(this).attr("data-confirm-dialogue"))) return true;
-        else return false;
-    });
-};
 
 $.Angelcrunch.notificationInit = function () {
     var className = {
@@ -305,20 +327,42 @@ $.Angelcrunch.notificationInit = function () {
     });
 };
 
+(function () {
+    var timeHandle=0;
+    $.fn.notificationToggle = function (txt) {
+        clearTimeout(timeHandle);
+        if (txt)
+            $(this).find(".txt").text(txt);
+        $(".notification").hide();
+        $(this).stop(true).slideDown(240);
+        timeHandle = setTimeout((function ($that) {
+            return function () {
+                $that.fadeOut(240);
+            };
+        }).call(this, $(this)), 3800);
+        return $(this);
+    };
+}).call(this);
+
 $.Angelcrunch.linkBtnInit = function () {
     $("button[data-href]").click(function () {
         var href = $(this).attr("data-href"),
+            test_mode_href = $(this).attr("data-test-mode-href"),
             _target = $(this).attr("data-target");
+        if (!href) return 0;
+        if (test_mode_href) href = test_mode_href;
         if (_target == "_blank") window.open(href);
         else location.href = href;
     });
 };
 
 
-// Module Initialize
+// Main Initialize
 $(function () {
-    $.Angelcrunch.back2top();
-    $.Angelcrunch.dialogueConfirm();
+    $.Angelcrunch.Utilities.hidden2Visible();
+    $.Angelcrunch.Utilities.back2top();
+    $.Angelcrunch.Utilities.dialogueConfirm();
+
     $.Angelcrunch.notificationInit();
     $.Angelcrunch.formModules();
     $.Angelcrunch.linkBtnInit();

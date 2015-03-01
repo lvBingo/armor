@@ -16,7 +16,9 @@ $.Angelcrunch = $.Angelcrunch || {};
     $COOKIE = $.Angelcrunch.COOKIE = $.Angelcrunch.COOKIE || {};
     $COOKIE.cookieName = {
         user_id: "uid",
-        token: "access_token"
+        token: "access_token",
+        defaultpart: "defaultpart",
+        detailsPageTipsNotView: "DP_TipsNotView"
     };
 
     $COOKIE.settings = { expires: 7, path: "/", secure: false };
@@ -31,16 +33,33 @@ $.Angelcrunch = $.Angelcrunch || {};
             $.cookie($COOKIE.cookieName.token,
                      $dataSet.Model.user.access_token,
                      $COOKIE.settings);
+            $.cookie($COOKIE.cookieName.defaultpart,
+                     $dataSet.Model.user.defaultpart,
+                     $COOKIE.settings);
+            $.cookie($COOKIE.cookieName.detailsPageTipsNotView,
+                     true,
+                     $COOKIE.settings);
         },
         clearUserKey: function () {
             $.removeCookie($COOKIE.cookieName.user_id,
                 $COOKIE.settings);
             $.removeCookie($COOKIE.cookieName.token,
                 $COOKIE.settings);
+            $.removeCookie($COOKIE.cookieName.defaultpart,
+                $COOKIE.settings);
+        },
+        clearDetailsPageViewState: function () {
+            $.removeCookie($COOKIE.cookieName.detailsPageTipsNotView,
+                $COOKIE.settings);
         },
         isLogin: function () {
             if ($.cookie($COOKIE.cookieName.user_id)
                && $.cookie($COOKIE.cookieName.token)) return true;
+            else return false;
+        },
+        canViewProjectDetails: function () {
+            if ($.cookie($COOKIE.cookieName.defaultpart) > 0)
+                return true;
             else return false;
         }
     }

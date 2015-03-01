@@ -36,37 +36,58 @@
     <script src="/static/js/wapsite/angelcrunch.jq.c.js"></script>
     <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
     <script src="/static/js/lib/avalon.mobile.min.js"></script>
-
+    <script type="text/javascript" id="data-setting">
+        var page = window.page || {};
+        page.settings = {
+            AjaxDomain: "mobile.tonghs.me",
+            loginPageURL: "/html/user/login.html" + "?source="
+        }
+    </script>
     <script type="text/javascript" id="page-interactive-init">
         var page = window.page || {};
         page.MethodObj = function () { };
         page.MethodObj.prototype = (function () {
+            var settings=page.settings;
+            var $COOKIE = $.Angelcrunch.COOKIE;
             var I = {
                 Ajax_details: {                     // Details
-                    url: "http://mobile.tonghs.me/v2/startup/detail",
-                    basic_data: {
-                    }
+                    url: "http://" + settings.AjaxDomain + "/v2/startup/m_detail",
+                    basic_data: {}
                 },
-                Ajax_finance_information: {                     // Basic information
-                    url: "http://mobile.tonghs.me/v2/startup/finance",
-                    basic_data: {
-                    }
+                Ajax_finance_information: {                     // Finance information
+                    url: "http://" + settings.AjaxDomain + "/v2/startup/m_finance",
+                    basic_data: {}
                 },
                 Ajax_basic_information: {                     // Basic information
-                    url: "http://mobile.tonghs.me/v2/startup/base_info",
-                    basic_data: {
-                    }
+                    url: "http://" + settings.AjaxDomain + "/v2/startup/base_info",
+                    basic_data: {}
+                },
+                Ajax_business_plan_files: {                     // The business plan files
+                    url: "http://" + settings.AjaxDomain + "/v2/startup/pb",
+                    basic_data: {}
+                },
+
+                Ajax_follow: {                     // Follow
+                    url: "http://" + settings.AjaxDomain + "/v2/follow",
+                    basic_data: {}
+                },
+                Ajax_unfollow: {                     // Unfollow
+                    url: "http://" + settings.AjaxDomain + "/v2/unfollow",
+                    basic_data: {}
                 },
                 API: {
-                    calculateInvesterEleWidth:""
+                    calculateInvesterEleWidth: "",
+                    changeFellowState: "",
+                    changeSendInvestmentState: ""
                 }
             };
 
+
             var waste_8912372 = function () {
                 var href, $loginBtn, loginBtnAttr;
-                $loginBtn = $("#login-btn");
+                $loginBtn = $(".login-btn");
                 href = escape(location.href),
-                loginBtnAttr = $loginBtn.attr("data-href");
+                loginBtnAttr = settings.loginPageURL || $loginBtn.attr("data-href");
                 if (loginBtnAttr) $loginBtn.attr("data-href", loginBtnAttr + href);
             };
 
@@ -80,20 +101,21 @@
                     itemNum = $item.length,
                     Divisor = itemNum > Factor ? Divisor : itemNum;
                     if (itemNum < 1) $container.hide();
-                    $item.outerWidth((parseInt($container.width() / Divisor) - (0.2 + itemNum * 0.012)));
+                    $item.outerWidth((parseInt($container.width() / Divisor) ));
                 };
                 var initial = I.API.calculateInvesterEleWidth = function () {
                     calculateItemWidth();
-                    $("#invester").calculateSliderModuleWidth({ rightSpaceWidth: 0 })
+                    $("#invester").calculateSliderModuleWidth({ rightSpaceWidth: 0, ignoreImg: true })
                 };
-
                 window.onresize = initial;
                 initial();
             };
 
             var waste_9839213 = function () {
-                var $COOKIE, $details;
-                $COOKIE = $.Angelcrunch.COOKIE;
+                var $details;
+                var detailsIsExpand = false;
+
+                
                 $details = $("#details");
                 // Basic information
                 (function () {
@@ -113,11 +135,11 @@
                         avalonNS.model.basicInformation.data = data;
 
                         titleStr = (data.name || "") + (data.concept ? (" - " + data.concept) : "");
-                        $.Angelcrunch.changeTitleTxt(titleStr);
+                        $.Angelcrunch.Utilities.changeTitleTxt(titleStr);
 
                         // Delay calculation method
                         sliderTimeHandle = setInterval(function () {
-                            if ($album.find("ul > li").length > 0 || times < 1) {
+                            if ($album.find("ul > li").length > 0) {
                                 $album.calculateSliderModuleWidth();
                                 times -= 10;
                             }
@@ -127,29 +149,10 @@
                     }, type);
                 }).call(this);
 
-                // Details information
-                (function () {
-                    if ($COOKIE.operation.isLogin()) {
-                        var url = I.Ajax_details.url,
-                            basic_data = I.Ajax_details.basic_data,
-                                  type = "jsonp";
-                        var _data = $.extend(true, {}, basic_data);
-                        var comid = $.Angelcrunch.url.getComid();
-                        _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
-                        _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
-
-                        if (comid) _data["com_id"] = comid;
-                        $.post(url, _data, function (data) {
-                            // $.Angelcrunch.dataSet.Model.projectDetails = data;
-                            avalonNS.model.details.data = data;
-                            $details.addClass("logged");
-                        }, type);
-                    }
-                }).call(this);
-
                 // Finance information
                 (function () {
-                    if ($COOKIE.operation.isLogin()) {
+                    if ($COOKIE.operation.isLogin()
+                        && $COOKIE.operation.canViewProjectDetails()) {
                         var financeTimeHandle = "";
                         var $invester = $("#invester");
 
@@ -166,16 +169,155 @@
                             var times = 50;
                             avalonNS.model.finance.data = data;
                             financeTimeHandle = setInterval(function () {
-                                if ($invester.find("ul > li").length > 0) {
+                                if ($invester.find("ul > li").length > 0 && detailsIsExpand) {
                                     I.API.calculateInvesterEleWidth();
-                                    times -= 10;
+                                    times -= 6;
                                 }
                                 if (times < 1) clearInterval(financeTimeHandle);
-                                times--;
-                            }, 40);
+                                if (detailsIsExpand) times--;
+                            }, 60);
                         }, type);
                     }
                 }).call(this);
+
+                // Details information
+                (function () {
+                    if ($COOKIE.operation.isLogin()
+                         && $COOKIE.operation.canViewProjectDetails()) {
+                        var url = I.Ajax_details.url,
+                            basic_data = I.Ajax_details.basic_data,
+                                  type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        var comid = $.Angelcrunch.url.getComid();
+                        _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
+                        _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
+
+                        if (comid) _data["com_id"] = comid;
+                        $.post(url, _data, function (data) {
+                            avalonNS.model.details.data = data;
+                            I.API.changeFellowState(data.is_follow);
+                            if (data.investment_is_send) I.API.changeSendInvestmentState();
+
+                            $details.addClass("logged");
+                            detailsIsExpand = true;
+                        }, type);
+                    }
+                }).call(this);
+
+                // The business plan files
+                (function () {
+                    if ($COOKIE.operation.isLogin()
+                         && $COOKIE.operation.canViewProjectDetails()) {
+                        var $invester = $("#invester");
+
+                        var url = I.Ajax_business_plan_files.url,
+                            basic_data = I.Ajax_business_plan_files.basic_data,
+                                  type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        var comid = $.Angelcrunch.url.getComid();
+                        _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
+                        _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
+
+                        if (comid) _data["com_id"] = comid;
+                        $.post(url, _data, function (data) {
+                            avalonNS.model.business_plan_files.data = data;
+                        }, type);
+                    }
+                }).call(this);
+            };
+
+            var waste_3920123 = function () {
+                var className = {
+                    followState: "reverse",
+                    sending: "sending-state"
+                };
+                var txt = {
+                    isFollow:"已关注",
+                    notFollow: "关注"
+                };
+                var $btn = $("#follow-btn");
+                
+                var changeFellowState =
+                    I.API.changeFellowState = function (isFollow) {
+                        if (isFollow)
+                            $btn.addClass(className.followState).text(txt.isFollow)
+                                    .removeClass(className.sending);
+                        else
+                            $btn.removeClass(className.followState).text(txt.notFollow)
+                                    .removeClass(className.sending);
+                    };
+
+                $btn.click(function () {
+                    if ($(this).hasClass(className.sending)) return 0;
+                    if ($(this).hasClass(className.followState))
+                        unfollowAjax();
+                    else followAjax();
+                });
+
+                // Follow
+                var followAjax = function () {
+                        var url = I.Ajax_follow.url,
+                            basic_data = I.Ajax_follow.basic_data,
+                                  type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        var comid = $.Angelcrunch.url.getComid();
+                        _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
+                        _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
+
+                        if (comid) _data["id"] = comid;
+                        $btn.addClass(className.sending);
+                        $.post(url, _data, function (data) {
+                            if (data.success)
+                                changeFellowState(true);
+                            else alert(data.message);
+                        }, type);
+                };
+                // Unfollow
+                var unfollowAjax = function () {
+                        var url = I.Ajax_unfollow.url,
+                            basic_data = I.Ajax_unfollow.basic_data,
+                                  type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        var comid = $.Angelcrunch.url.getComid();
+                        _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
+                        _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
+
+                        if (comid) _data["id"] = comid;
+                        $btn.addClass(className.sending);
+                        $.post(url, _data, function (data) {
+                            if (data.success)
+                                changeFellowState(false);
+                            else alert(data.message);
+                        }, type);
+                };
+
+            };
+
+            var waste_2139812 = function () {
+                var className = {
+                    btn:"#send-investment-btn",
+                    isSendState: "reverse",
+                    sending: "sending-state"
+                };
+                var $btn;
+                $btn=$(className.btn)
+                I.API.changeSendInvestmentState = function () {
+                    $btn.addClass(className.isSendState)
+                        .text("投资意向已发送")
+                        .removeAttr("data-href");
+
+                };
+            };
+
+            var waste_3291823 = function () {
+                if ($COOKIE.operation.isLogin()
+                    && !$COOKIE.operation.canViewProjectDetails()
+                    && $.cookie($COOKIE.cookieName.detailsPageTipsNotView)) {
+                    $(".can-not-view-marked").each(function () {
+                        $(this).show().siblings(":not(.can-not-view-marked)").hide();
+                        $COOKIE.operation.clearDetailsPageViewState();
+                    });
+                }
             };
 
             return {
@@ -184,6 +326,10 @@
 
                     waste_9839213();
                     waste_8912372();
+                    waste_3291823();
+                    waste_2139812();
+
+                    waste_3920123();
                 },
 
                 pageLoad_Init: function () {
@@ -218,11 +364,13 @@
                 }),
                 finance: avalon.define("finance", function (vm) {
                     vm.data = {};
+                }),
+                business_plan_files: avalon.define("business-plan-files", function (vm) {
+                    vm.data = {};
                 })
             };
         }).call(this);
     </script>
-
 </head>
 <body>
     <div id="details" class="details">
@@ -239,7 +387,7 @@
                         <span class="sr-only">{{data.finance_percent}}% Complete</span>
                     </div>
                 </div>
-                <p><em>投资意向: {{data.amount}}万（预融资{{data.hope_amount}}万）</em><em class="right">剩余{{data.day}}天</em></p>
+                <p class="hidden2Visible"><em>投资意向: {{data.amount}}万（预融资{{data.hope_amount}}万）</em><em class="right">剩余{{data.day}}天</em></p>
             </div>
         </div>
         <div id="album" class="slider-container" ms-controller="basic-information">
@@ -250,14 +398,19 @@
         <div class="not-logged-in">
             <div class="login-options">
                 <p class="declare">详细信息只对<i>天使汇认证投资人</i>可见，请选择您的身份:</p>
+                <p class="declare can-not-view-marked">想查看项目详细信息、成长数据、商业计划书等重要信息，你需要在电脑上打开天使汇网站申请投资人身份。</p>
                 <div class="control-module">
                     <em><i></i>天使汇认证投资人</em>
-                    <button id="login-btn" class="btn btn-small" data-href="/html/user/login.html?source=">登录</button>
+                    <button class="btn btn-small login-btn" data-href="/html/user/login.html?source=">登录</button>
                 </div>
-                <div class="control-module">
+                <div class="control-module can-not-view-marked">
+                    <em><i></i>换一个账号登录？</em>
+                    <button class="btn btn-small login-btn" data-href="/html/user/login.html?source=">登录</button>
+                </div>
+                <!--<div class="control-module">
                     <em><i></i>未认证投资人</em>
                     <button class="btn btn-small">申请认证</button>
-                </div>
+                </div>-->
             </div>
             <div class="banner-footer">
                 <p>AngelCrunch.com</p>
@@ -311,7 +464,7 @@
                         <p class="date">
                             <i>{{el.occurdate|date("dd")}}</i><em>{{el.occurdate|date("yyyy")}}</em>
                         </p>
-                        <p class="gray" ms-text="el.content"></p>
+                        <p class="gray">{{el.name}}{{el.quantity}}</p>
                     </div>
                 </article>
                 <article class="news" ms-if="data.news.length">
@@ -332,12 +485,12 @@
                 <article class="needs">
                     <div class="info-table">
                         <ul>
-                            <li class="hourglass"><aside><i>{{data.hope_amount}}W</i><em>预计融资</em></aside></li>
-                            <li class="pie-chat"><aside><i>{{data.stock_sale}}%</i><em>出让股权比例</em></aside></li>
+                            <li class="hourglass"><aside><i>{{data.hope_amount || 0}}W</i><em>预计融资</em></aside></li>
+                            <li class="pie-chat"><aside><i>{{data.stock_sale || 0}}%</i><em>出让股权比例</em></aside></li>
                         </ul>
                         <ul>
-                            <li class="money"><aside><i>{{data.min_quota}}W</i><em>最低投资额</em></aside></li>
-                            <li class="bar-chat"><aside><i>{{data.price}}W</i><em>融资前估值</em></aside></li>
+                            <li class="money"><aside><i>{{data.min_quota || 0}}W</i><em>最低投资额</em></aside></li>
+                            <li class="bar-chat"><aside><i>{{data.price || 0}}W</i><em>融资前估值</em></aside></li>
                         </ul>
                     </div>
                     <p ms-if="data.txt"><i>优先考虑的投资人：</i><em ms-text="data.txt"></em></p>
@@ -349,7 +502,7 @@
                             <li ms-repeat="data.vc_list">
                                 <p class="avatar"><img ms-src="el.avatar || ''" /></p>
                                 <p><i ms-text="el.name"></i><em>{{el.firmname}}{{el.title}}</em></p>
-                                <div class="investment">20W</div>
+                                <div class="investment">{{el.amount}}W</div>
                             </li>
                         </ul>
                     </div>
@@ -365,21 +518,21 @@
                             <p class="title-container"><i>Q</i><em>{{el.name}}{{"·" + el.title}}</em></p>
                             <p ms-text="el.q"></p>
                         </div>
-                        <div class="item">
-                            <p class="title-container"><i>A</i><em>叶春原·CTO</em></p>
-                            <p ms-text="el.a || ''"></p>
+                        <div class="item" ms-if="el.a">
+                            <p class="title-container"><i>A</i>{{el.a_name}}·项目创始人</p>
+                            <p ms-text="el.a"></p>
                         </div>
                     </div>
                 </article>
-                <article class="extra-files">
+                <article class="extra-files" ms-controller="business-plan-files" ms-if="data.pb">
                     <h1>商业企划书</h1>
-                    <div class="file PDF"><a data-confirm-dialogue="确定要下载商业计划书吗？[6.5M]" href="http://221.192.147.112/file.data.weipan.cn/53455904/5b698246abafcf941722f50f3a44f0b278e8904f?ssig=WRuoQ4MslX&Expires=1423059339&KID=sae,l30zoo1wmz&fn=冰与火之歌全集.pdf&skiprd=2&se_ip_debug=103.8.220.228&corp=1">下载商业计划书 [6.5M]</a></div>
+                    <div class="file PDF"><a data-confirm-dialogue="确定要下载商业计划书吗？" ms-href="data.pb">下载商业计划书</a></div>
                 </article>
             </div>
             <div class="page-action">
                 <div class="btn-group">
-                    <button class="btn btn-small white-border" data-btn-reverse-text="已关注">关注</button>
-                    <button class="btn btn-small orange" data-href="www.baidu.com" data-target="_self">发送投资意向</button>
+                    <button id="follow-btn" class="btn btn-small white-border" data-btn-reverse-text="已关注">关注</button>
+                    <button id="send-investment-btn" class="btn btn-small orange" data-href="/vc/" data-test-mode-href="/dist/investor/send_investment.html?test_mode=1&comid=12813761">发送投资意向</button>
                 </div>
             </div>
         </div>

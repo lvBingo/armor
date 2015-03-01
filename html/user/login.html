@@ -90,7 +90,7 @@
                                 $.Angelcrunch.COOKIE.operation.setUserKey();
                                 location.href = $.Angelcrunch.url.getSource() || "/";
                             } else if (data.success == false)
-                                $notification.stop(true).slideDown(240).delay(3800).fadeOut(240);
+                                $notification.notificationToggle();
                             else
                                 throw new Error("An unknown error, the error code is E821928234");
                         }, type);

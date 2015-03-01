@@ -1,0 +1,44 @@
+﻿/*/
+/*
+/* Rank: 3
+/* Standard：Google
+/*
+/*/
+
+.success-desc {
+  min-height:192px;
+  padding:40px 10% 36px;
+  background:#F5F5F5;
+  text-align:center;
+}
+
+.success-desc .icon {
+  display:inline-block;
+}
+
+.success-desc .icon img {
+  width:46px;
+}
+
+.success-desc h1 {
+  font-size:26px;
+  line-height:38px;
+}
+
+.success-desc p {
+  line-height:16px;
+}
+
+.control-module {
+  width:100%;
+  margin-top:28px;
+}
+
+.control-module p {
+  line-height:36px;
+  text-align:center;
+}
+
+.banner-footer {
+  margin-top:216px;
+}

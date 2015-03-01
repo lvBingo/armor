@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <meta name="description" content="天使汇 | 让靠谱的项目找到靠谱的钱 | 创业，投资，找VC就上天使汇 | 中国股权众筹第一平台" />
+    <meta name="keywords" content="天使汇,创业,投资,找VC,上天使汇,中国股权众筹第一平台" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+    <meta content="yes" name="apple-touch-fullscreen"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta name="author" content="http://angelcrunch.com" />
+    <meta name="copyright" content="Copyright &copy;http://angelcrunch.com 版权所有" />
+    <meta name="revisit-after"  content="1 days" />
+    <meta content="email=no" name="format-detection" />
+    <meta content="telephone=yes" name="format-detection" />
+
+    <!--iPhone vs retina screen -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="touch-icon-iphone-114.png" />
+    <!--iPad2 & older -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="touch-icon-ipad-144.png" />
+    <!--iPad3 & updated  -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="touch-icon-ipad-144.png" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
+    <link rel="Bookmark" href="/favicon.ico" />
+    <link rel="canonical" href="页面权威链接，待编辑" />
+    <!-- META WT -->
+
+    <title>天使汇 | 发送投资意向 | 让靠谱的项目找到靠谱的钱</title>
+    <link href="/static/css/wapsite/base-css.css" rel="stylesheet" />
+    <link href="/static/css/wapsite/investor/details.css" rel="stylesheet" />
+    <link href="/static/css/wapsite/investor/send_investment.css" rel="stylesheet" />
+
+    <script src="/static/js/lib/jquery-1.11.1.min.js"></script>
+    <script src="/static/js/wapsite/angelcrunch.jq.c.js"></script>
+    <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
+    <script src="/static/js/lib/avalon.mobile.min.js"></script>
+    <script type="text/javascript" id="data-setting">
+        var page = window.page || {};
+        page.settings = {
+            AjaxDomain: "mobile.tonghs.me",
+            loginPageURL: "/html/user/login.html" + "?source="
+        }
+    </script>
+    <script type="text/javascript" id="page-interactive-init">
+        var page = window.page || {};
+        page.MethodObj = function () { };
+        page.MethodObj.prototype = (function () {
+            var settings = page.settings;
+            var $COOKIE = $.Angelcrunch.COOKIE;
+            var I = {
+                Ajax_basic_information: {                     // Basic information
+                    url: "http://" + settings.AjaxDomain + "/v2/startup/base_info",
+                    basic_data: {}
+                },
+                Ajax_finance_information: {                     // Finance information
+                    url: "http://" + settings.AjaxDomain + "/v2/startup/m_finance",
+                    basic_data: {}
+                },
+                Ajax_send_investment: {                     // Send investment
+                    url: "http://" + settings.AjaxDomain + "/v2/startup/vc",
+                    basic_data: {}
+                }
+            };
+
+            var waste_2901283 = function () {
+                if (!
+                    ($COOKIE.operation.isLogin()
+                    && $COOKIE.operation.canViewProjectDetails())) {
+                    var page = $.Angelcrunch.url.getDetailsPageDomainURL();
+                    if (page) location.href = page;
+                    else throw new Error("An unknown error, the error code is E8219289123.");
+                }
+            };
+
+            var waste_9839213 = function () {
+                // Basic information
+                (function () {
+                    var url = I.Ajax_basic_information.url,
+                        basic_data = I.Ajax_basic_information.basic_data,
+                              type = "jsonp";
+                    var _data = $.extend(true, {}, basic_data);
+                    var comid = $.Angelcrunch.url.getComid();
+
+                    if (comid) _data["com_id"] = comid;
+                    $.post(url, _data, function (data) {
+                        var titleStr;
+                        avalonNS.model.basicInformation.data = data;
+
+                        titleStr = "发送投资意向 | " + (data.name || "") + (data.concept ? (" - " + data.concept) : "");
+                        $.Angelcrunch.Utilities.changeTitleTxt(titleStr);
+                    }, type);
+                }).call(this);
+
+                // Finance information
+                (function () {
+                    if ($COOKIE.operation.isLogin()
+                        && $COOKIE.operation.canViewProjectDetails()) {
+                        var url = I.Ajax_finance_information.url,
+                            basic_data = I.Ajax_finance_information.basic_data,
+                                  type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        var comid = $.Angelcrunch.url.getComid();
+                        _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
+                        _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
+
+                        if (comid) _data["com_id"] = comid;
+                        $.post(url, _data, function (data) {
+                            var times = 50;
+                            avalonNS.model.finance.data = data;
+                        }, type);
+                    }
+                }).call(this);
+
+            };
+
+            var waste_12389123 = function () {
+                var className = {
+                    amount: "#ci-amount",
+                    service: "#ci-service",
+                    legal: "#legal-terms",
+                    btn: "#submit-btn",
+                    notification: ".notification"
+                };
+                var txt = {
+                    canNotSubmit: "投资金额需填写一个有效的值",
+                    needToAgreelegal: "需要同意天使汇服务条款中的内容",
+                    failed: "投资意向发送失败，请重新发送"
+                };
+                var $amount, $service, $legal, $btn;
+                var $notification;
+                var redirect;
+                $amount = $(className.amount),
+                $service = $(className.service),
+                $legal = $(className.legal),
+                $btn = $(className.btn);
+                $notification = $(className.notification);
+
+                redirect = $btn.attr("data-redirect");
+                $btn.click(function () {
+                    if (!$amount.val().trim())
+                        $notification.notificationToggle(txt.canNotSubmit);
+                    else if (!$legal.is(":checked"))
+                        $notification.notificationToggle(txt.needToAgreelegal);
+                    else {
+                        var url = I.Ajax_send_investment.url,
+                                basic_data = I.Ajax_send_investment.basic_data,
+                                      type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
+                        _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
+
+                        _data[$amount.attr("name")] = $amount.val();
+                        _data[$service.attr("name")] = $service.val();
+                        _data["weixin"] = "";
+                        _data["angel_name"] = "";
+                        _data["phone"] = "";
+
+                        var comid = $.Angelcrunch.url.getComid();
+                        if (comid) _data["com_id"] = comid;
+                        $.post(url, _data, function (data) {
+                            if (data.success)
+                                location.href = redirect;
+                            else $notification.notificationToggle(txt.failed);
+                        }, type);
+                    }
+                });
+            };
+
+            return {
+                attackEvent: function () {
+                    waste_12389123();
+                    waste_9839213();
+                },
+
+                pageLoad_Init: function () {
+                    waste_2901283();
+                },
+
+                initial: function () {
+                    this.pageLoad_Init();
+                    this.attackEvent();
+                }
+            };
+        })();
+
+        page.initialBridge = function () {
+            var o = new page.MethodObj();
+            o.initial();
+        }
+
+        $(function () {
+            page.initialBridge();
+        });
+    </script>
+    <script type="text/javascript" id="avalonInit">
+    var avalonNS = window.avalonNS || {};
+    (function () {
+        avalonNS.model = {
+            basicInformation: avalon.define("basic-information", function (vm) {
+                vm.data = {};
+            }),
+            finance: avalon.define("finance", function (vm) {
+                vm.data = {};
+            }),
+        };
+    }).call(this);
+    </script>
+</head>
+<body>
+    <div class="details">
+        <div class="notification red"><i class="txt"></i><i class="close">×</i></div>
+        <div class="branding-head" ms-controller="basic-information">
+            <h5>发送投资意向</h5>
+            <div class="icon"><img ms-src="data.logo||''" /></div>
+            <div class="brand-info">
+                <h1 ms-text="data.name"></h1>
+                <p ms-text="data.concept"></p>
+                <p class="extra" ms-text="data.industry"></p>
+            </div>
+            <div class="progress-container">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success progress-bar-striped active reverse" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" ms-css-width="{{data.finance_percent > 100 ? 100 : data.finance_percent}}%">
+                        <span class="sr-only">{{data.finance_percent}}% Complete</span>
+                    </div>
+                </div>
+                <p class="hidden2Visible"><em>投资意向: {{data.amount}}万（预融资{{data.hope_amount}}万）</em><em class="right">剩余{{data.day}}天</em></p>
+            </div>
+        </div>
+        <div class="send-investment">
+            <div class="invest-info" ms-controller="finance">
+                <article class="needs">
+                    <div class="info-table">
+                        <ul>
+                            <li class="hourglass"><aside><i>{{data.hope_amount || 0}}W</i><em>预计融资</em></aside></li>
+                            <li class="pie-chat"><aside><i>{{data.stock_sale || 0}}%</i><em>出让股权比例</em></aside></li>
+                        </ul>
+                        <ul>
+                            <li class="money"><aside><i>{{data.min_quota || 0}}W</i><em>最低投资额</em></aside></li>
+                            <li class="bar-chat"><aside><i>{{data.price || 0}}W</i><em>融资前估值</em></aside></li>
+                        </ul>
+                    </div>
+                    <p ms-if="data.txt"><i>优先考虑的投资人：</i><em ms-text="data.txt"></em></p>
+                </article>
+            </div>
+        </div>
+        <div class="fill-out">
+            <label><span>投资金额</span><i><input id="ci-amount" type="number" name="amount" value="" /><bdi>万元</bdi></i></label>
+            <label class="has-textarea"><span>附加价值</span><i><textarea id="ci-service" name="service"></textarea></i></label>
+            <div class="addition-agreement">
+                <p>我已知晓 <a href="" data-confirm-dialogue="你将跳转至《天使汇在线投资服务协议》页面，确定吗?">《天使汇在线投资服务协议》</a> 及其附件 <a href="" data-confirm-dialogue="你将跳转至《风险揭示书》页面，确定吗?">《风险揭示书》</a> 中的所有内容 ，并愿意自己承担投资带来的风险。</p>
+                <div class="modules">
+                    <div class="mentos-container">
+                        <label class="label">
+                            <input id="legal-terms" class="mentos" type="checkbox" name="additionalAgreement" value="1" />
+                            <em class="tracks">
+                                <em class="slider-button">
+                                    <i>×</i>
+                                    <i></i>
+                                </em>
+                            </em>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button id="submit-btn" class="btn submit-btn" data-redirect="/html/state_pages/send_investment_success.html"></button>
+        </div>
+        <div class="banner-footer">
+            <p>AngelCrunch.com</p>
+            <p>天使汇 - 让靠谱的项目找到靠谱的钱</p>
+        </div>
+    </div>
+</body>
+</html>
