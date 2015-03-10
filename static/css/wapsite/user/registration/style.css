@@ -1,0 +1,21 @@
+﻿/*/
+/*
+/* Rank: 3
+/* Standard：Google
+/*
+/*/
+
+.slogan {
+  text-align:center;
+  padding:24px 10% 34px 10%;
+  background:#F5F5F5;
+}
+
+.slogan h1 {
+  font-size:26px;
+  line-height:44px;
+}
+
+.slogan p {
+  line-height:18px;
+}

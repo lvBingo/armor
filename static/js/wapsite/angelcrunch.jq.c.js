@@ -223,8 +223,12 @@ $.Angelcrunch.Utilities.changeTitleTxt = function (str) {
 
 $.Angelcrunch.Utilities.dialogueConfirm = function () {
     $("[data-confirm-dialogue]").click(function () {
-        if (confirm($(this).attr("data-confirm-dialogue"))) return true;
-        else return false;
+        if (confirm($(this).attr("data-confirm-dialogue"))) {
+            $(this).attr("data-confirm-donot-redirect", "");
+            return true;
+        } else
+            $(this).attr("data-confirm-donot-redirect", true);
+        return false;
     });
 };
 
@@ -262,11 +266,10 @@ $.Angelcrunch.Utilities.dialogueConfirm = function () {
                   config.rightSpaceWidth : defaultConfig.rightSpaceWidth,
         measure = varible,
         globeWidth = $(".details").width();
-
         $(this).find("li").each(function () {
             $image = $(this).find("img");
             if ($image.length && $image.attr("src") && !ignoreImg) {
-                _imgManipulation($image, toRight);
+                _imgManipulation($image, options);
             };
             measure += $(this).outerWidth();
         });
@@ -310,7 +313,8 @@ $.Angelcrunch.Utilities.dialogueConfirm = function () {
         $checkbox = $(className.checkbox);
         $checkbox.change(function () {
             _changeCheckboxModuleState.call(this);
-        })
+        });
+        _changeCheckboxModuleState.call($checkbox);
     };
 
 }).call(this);
@@ -345,11 +349,12 @@ $.Angelcrunch.notificationInit = function () {
 }).call(this);
 
 $.Angelcrunch.linkBtnInit = function () {
-    $("button[data-href]").click(function () {
+    $("[data-href]").click(function () {
         var href = $(this).attr("data-href"),
             test_mode_href = $(this).attr("data-test-mode-href"),
+            isRedirect = $(this).attr("data-confirm-donot-redirect"),
             _target = $(this).attr("data-target");
-        if (!href) return 0;
+        if (!href||isRedirect) return 0;
         if (test_mode_href) href = test_mode_href;
         if (_target == "_blank") window.open(href);
         else location.href = href;

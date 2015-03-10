@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <meta name="description" content="天使汇 | 让靠谱的项目找到靠谱的钱 | 创业，投资，找VC就上天使汇 | 中国股权众筹第一平台" />
+    <meta name="keywords" content="天使汇,创业,投资,找VC,上天使汇,中国股权众筹第一平台" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+    <meta content="yes" name="apple-touch-fullscreen"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta name="author" content="http://angelcrunch.com" />
+    <meta name="copyright" content="Copyright &copy;http://angelcrunch.com 版权所有" />
+    <meta name="revisit-after"  content="1 days" />
+    <meta content="email=no" name="format-detection" />
+    <meta content="telephone=yes" name="format-detection" />
+
+    <!--iPhone vs retina screen -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="touch-icon-iphone-114.png" />
+    <!--iPad2 & older -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="touch-icon-ipad-144.png" />
+    <!--iPad3 & updated  -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="touch-icon-ipad-144.png" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
+    <link rel="Bookmark" href="/favicon.ico" />
+    <link rel="canonical" href="页面权威链接，待编辑" />
+    <!-- META WT -->
+
+    <title>投资人注册 | 天使汇 | 让靠谱的项目找到靠谱的钱 | 创业，投资，找VC就上天使汇 | 中国股权众筹第一平台</title>
+    <link href="/static/css/wapsite/base-css.css" rel="stylesheet" />
+    <link href="/static/css/wapsite/user/registration/style.css" rel="stylesheet" />
+
+    <script src="/static/js/lib/jquery-1.11.1.min.js"></script>
+    <script src="/static/js/wapsite/angelcrunch.jq.c.js"></script>
+    <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
+    <script type="text/javascript" id="page-interactive-init">
+        var page = window.page || {};
+        page.MethodObj = function () { };
+        page.MethodObj.prototype = (function () {
+            var I = {
+                Ajax_img: {                     // Login service
+                    url: "http://mobile.tonghs.me/v2/settings/upload_img",
+                    basic_data: {
+
+                    }
+                }
+            };
+
+            var waste_9839213 = function () {
+                var className={
+                    account: "#account",
+                    pwd: "#pwd",
+                    btn: "#subbmit-btn",
+                    notification:".notification",
+                    // state
+                    active:"active"
+                };
+                var $account, $pwd, $btn;
+                var $notification;
+                $account = $(className.account),
+                $pwd = $(className.pwd),
+                $btn = $(className.btn);
+                $notification = $(className.notification);
+
+                var checkVal = function () {
+                    if ($account.val() != ""
+                       && $pwd.val().trim().length >= 6) return true;
+                    else return false;
+                };
+
+                var checkActive = function () {
+                    if (checkVal()) $btn.addClass(className.active);
+                    else $btn.removeClass(className.active);
+                };
+
+                $("#file").change(function () {
+                    var url = I.Ajax_img.url,
+                            basic_data = I.Ajax_img.basic_data,
+                                  type = "jsonp";
+                    var _data = $.extend(true, {}, basic_data);
+
+                    var formdata = new FormData();
+                    
+                    var fileObj = $(this)[0].files;
+                    formdata.append("imgFile", fileObj[0]);
+
+                    $.ajax({
+                        url: url,
+                        data: formdata,
+                        cache: false,
+                        //enctype: 'multipart/form-data',
+                        contentType: false,
+                        processData: false,
+                        type:"post",
+                        dataType: "jsonp",
+                        success: function (data) {
+                            alert(1);
+                            if (data.success == 0) {
+                                
+                            }
+                        }
+                    });
+
+                    //$.post(url, _data, function (data) {
+                    //    if (data.success) {
+                    //        alert(1);
+                    //    } else if (data.success == false)
+                    //        $notification.notificationToggle();
+                    //    else
+                    //        throw new Error("An unknown error, the error code is E821928234");
+                    //}, type);
+
+                });
+
+                $btn.click(function () {
+                    if ($(this).hasClass(className.active)) {
+                        var url = I.Ajax_login.url,
+                            basic_data = I.Ajax_login.basic_data,
+                                  type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        _data[$account.attr("name")] = $account.val().trim();
+                        _data[$pwd.attr("name")] = $pwd.val().trim();
+
+                        $.post(url, _data, function (data) {
+                            if (data.user) {
+                                $.Angelcrunch.dataSet.operation.setUser(data.user);
+                                $.Angelcrunch.COOKIE.operation.setUserKey();
+                                location.href = $.Angelcrunch.url.getSource() || "/";
+                            } else if (data.success == false)
+                                $notification.notificationToggle();
+                            else
+                                throw new Error("An unknown error, the error code is E821928234");
+                        }, type);
+                    };
+                    return false;
+                });
+
+
+                $account.keyup(function () {
+                    checkActive();
+                });
+                $pwd.keyup(function () {
+                    checkActive();
+                });
+                // Page load ready checked
+                checkActive();
+            }
+
+            return {
+                attackEvent: function () {
+                   waste_9839213();
+                },
+
+                pageLoad_Init: function () {
+                },
+
+                initial: function () {
+                    this.pageLoad_Init();
+                    this.attackEvent();
+                }
+            };
+        })();
+
+        page.initialBridge = function () {
+            var o = new page.MethodObj();
+            o.initial();
+        }
+
+        $(function () {
+            page.initialBridge();
+        })
+    </script>
+</head>
+<body>
+    <div class="details">
+        <div class="notification red">登录名和密码不匹配 <i class="close">×</i></div>
+        <div class="slogan">
+            <h1>发现下一个阿里巴巴</h1>
+            <p>天使汇--中国股权众筹第一平台，目前已经有超过2000位认证投资人,超过300个项目完成30亿元的融资。</p>
+        </div>
+        <div class="stars">
+            <section>
+                <h1>明星投资人</h1>
+                <ul>
+                    <li>
+                        <div class="pic">
+                            <img src="/static/images/wapsite/129387129837.png" />
+                        </div>
+                        <p>雷军</p>
+                    </li>
+                    <li>
+                        <div class="pic">
+                            <img src="/static/images/wapsite/123897129387.png" />
+                        </div>
+                        <p>麦刚</p>
+                    </li>
+                    <li>
+                        <div class="pic">
+                            <img src="/static/images/wapsite/12837198273.png" />
+                        </div>
+                        <p>吴世春</p>
+                    </li>
+                </ul>
+            </section>
+            <section>
+                <h1>明星项目</h1>
+                <ul>
+                    <li>
+                        <div class="pic">
+                            <img src="/static/images/wapsite/129837129837.png" />
+                        </div>
+                        <p>小猪短租</p>
+                    </li>
+                    <li>
+                        <div class="pic">
+                            <img src="/static/images/wapsite/1238798782323.png" />
+                        </div>
+                        <p>贷小秘</p>
+                    </li>
+                    <li>
+                        <div class="pic">
+                            <img src="/static/images/wapsite/129873987231.png" />
+                        </div>
+                        <p>喜上妆</p>
+                    </li>
+                </ul>
+            </section>
+        </div>
+        <div class="registration">
+            <!-- Back-up form -->
+            <form action="/" method="post">
+                <input id="file" type="file" name="name" value="" />
+                <img id="image" src="" alt="Alternate Text" />
+                <label><span>真实姓名</span><i><input id="account" type="text" name="account" value="" /></i></label>
+                <label><span>手机号码</span><i><input id="phone" type="text" name="account" value="" /></i></label>
+                <label><span>上传个人名片</span><i><input id="card" type="text" name="account" value="" /></i></label>
+                <label><span>密码</span><i><input id="pwd" type="text" name="account" value="" /></i></label>
+                <label><span>输入短信验证码</span><i><input id="verify-code" type="text" name="account" value="" /></i></label>
+                <div class="addition-agreement">
+                    <p>我已知晓 <a href="" data-confirm-dialogue="你将跳转至《天使汇在线投资服务协议》页面，确定吗?">《天使汇在线投资服务协议》</a> 及其附件 <a href="" data-confirm-dialogue="你将跳转至《风险揭示书》页面，确定吗?">《风险揭示书》</a> 中的所有内容 ，并愿意自己承担投资带来的风险。</p>
+                    <div class="modules">
+                        <div class="mentos-container">
+                            <label class="label">
+                                <input id="legal-terms" class="mentos" type="checkbox" name="additionalAgreement" value="1" />
+                                <em class="tracks">
+                                    <em class="slider-button">
+                                        <i>×</i>
+                                        <i></i>
+                                    </em>
+                                </em>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button id="subbmit-btn" class="btn submit-btn"></button>
+            </form>
+        </div>
+        <div class="banner-footer">
+            <p>AngelCrunch.com</p>
+            <p>天使汇 - 让靠谱的项目找到靠谱的钱</p>
+        </div>
+    </div>
+</body>
+</html>

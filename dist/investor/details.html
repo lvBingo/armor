@@ -36,6 +36,7 @@
     <script src="/static/js/wapsite/angelcrunch.jq.c.js"></script>
     <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
     <script src="/static/js/lib/avalon.mobile.min.js"></script>
+
     <script type="text/javascript" id="data-setting">
         var page = window.page || {};
         page.settings = {
@@ -228,6 +229,8 @@
 
             var waste_3920123 = function () {
                 var className = {
+                    notification: ".notification",
+
                     followState: "reverse",
                     sending: "sending-state"
                 };
@@ -235,16 +238,16 @@
                     isFollow:"已关注",
                     notFollow: "关注"
                 };
-                var $btn = $("#follow-btn");
+                var $btn, $notification;
+                $btn = $("#follow-btn"),
+                $notification = $(className.notification);
                 
                 var changeFellowState =
                     I.API.changeFellowState = function (isFollow) {
                         if (isFollow)
-                            $btn.addClass(className.followState).text(txt.isFollow)
-                                    .removeClass(className.sending);
+                            $btn.addClass(className.followState).text(txt.isFollow);
                         else
-                            $btn.removeClass(className.followState).text(txt.notFollow)
-                                    .removeClass(className.sending);
+                            $btn.removeClass(className.followState).text(txt.notFollow);
                     };
 
                 $btn.click(function () {
@@ -269,7 +272,8 @@
                         $.post(url, _data, function (data) {
                             if (data.success)
                                 changeFellowState(true);
-                            else alert(data.message);
+                            else $notification.notificationToggle();
+                            $btn.removeClass(className.sending);
                         }, type);
                 };
                 // Unfollow
@@ -287,7 +291,8 @@
                         $.post(url, _data, function (data) {
                             if (data.success)
                                 changeFellowState(false);
-                            else alert(data.message);
+                            else $notification.notificationToggle();
+                            $btn.removeClass(className.sending);
                         }, type);
                 };
 
@@ -374,6 +379,7 @@
 </head>
 <body>
     <div id="details" class="details">
+        <div class="notification red"><i class="txt">关注失败, 请稍后重试.</i><i class="close">×</i></div>
         <div class="branding-head" ms-controller="basic-information">
             <div class="icon"><img ms-src="data.logo||''" /></div>
             <div class="brand-info">
@@ -531,7 +537,7 @@
             </div>
             <div class="page-action">
                 <div class="btn-group">
-                    <button id="follow-btn" class="btn btn-small white-border" data-btn-reverse-text="已关注">关注</button>
+                    <button id="follow-btn" class="btn btn-small white-border">关注</button>
                     <button id="send-investment-btn" class="btn btn-small orange" data-href="/vc/" data-test-mode-href="/dist/investor/send_investment.html?test_mode=1&comid=12813761">发送投资意向</button>
                 </div>
             </div>
