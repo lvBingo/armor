@@ -33,9 +33,24 @@
     <link href="/static/css/wapsite/user/registration/style.css" rel="stylesheet" />
 
     <script src="/static/js/lib/jquery-1.11.1.min.js"></script>
+
+    <script src="/static/js/lib/module.js"></script>
+    <script src="/static/js/lib/uploader.js"></script>
+
     <script src="/static/js/wapsite/angelcrunch.jq.c.js"></script>
     <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
     <script type="text/javascript" id="page-interactive-init">
+
+        var uploader = simple.uploader({});
+        uploader.on('uploadcomplete', function(e, file, r){
+            o = $.parseJSON(r)
+            console.log(e);
+            console.log(file);
+            console.log(r)
+            console.log(get_crop(r));
+            console.log('http://dn-tonghs.qbox.me/' + o.key + '?imageMogr2/crop/!' + get_crop(r));
+        });
+
         var page = window.page || {};
         page.MethodObj = function () { };
         page.MethodObj.prototype = (function () {
@@ -81,27 +96,29 @@
                                   type = "jsonp";
                     var _data = $.extend(true, {}, basic_data);
 
-                    var formdata = new FormData();
+                    uploader.upload(this.files);
                     
-                    var fileObj = $(this)[0].files;
-                    formdata.append("imgFile", fileObj[0]);
+                    //var formdata = new FormData();
+                    
+                    //var fileObj = $(this)[0].files;
+                    //formdata.append("imgFile", fileObj[0]);
 
-                    $.ajax({
-                        url: url,
-                        data: formdata,
-                        cache: false,
-                        //enctype: 'multipart/form-data',
-                        contentType: false,
-                        processData: false,
-                        type:"post",
-                        dataType: "jsonp",
-                        success: function (data) {
-                            alert(1);
-                            if (data.success == 0) {
-                                
-                            }
-                        }
-                    });
+                    //$.ajax({
+                    //    url: url,
+                    //    data: formdata,
+                    //    cache: false,
+                    //    //enctype: 'multipart/form-data',
+                    //    contentType: false,
+                    //    processData: false,
+                    //    type:"post",
+                    //    dataType: "jsonp",
+                    //    success: function (data) {
+                    //        alert(1);
+                    //        if (data.success == 0) {
+                    //            
+                    //        }
+                    //    }
+                    //});
 
                     //$.post(url, _data, function (data) {
                     //    if (data.success) {
