@@ -204,9 +204,13 @@
                         if (!$(this).hasClass(state.again))
                             $input.verify_code.removeAttr(attr.disabled).val("");
 
-                        $btn.SMS.html(txt.btn.waiting).addClass(state.checking + " " + state.disable);
-                        changeTime();
-                        $.post(url, _data, function (data) { }, type);
+                        $.post(url, _data, function (data) {
+                            if (data.success) {
+                                $btn.SMS.html(txt.btn.waiting).addClass(state.checking + " " + state.disable);
+                                changeTime();
+                            } else
+                                $notification.notificationToggle(data.message);
+                        }, type);
                     })
                     var timehandle;
                     var changeTime = function () {
@@ -326,6 +330,10 @@
                         $input.pwd.attr("type", "password");
                     }).mousemove(function () {
                         $input.pwd.attr("type", "password");
+                    });
+
+                    $input.pwd.focus(function () {
+                        $(this).attr("type", "password");
                     });
                 }).call(this);
 
