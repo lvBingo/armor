@@ -42,3 +42,55 @@
 .banner-footer {
   margin-top:216px;
 }
+
+
+
+.download-module {
+  width:100%;
+  margin-top:36px;
+}
+
+.download-module>p {
+  text-align:center;
+  line-height:38px;
+}
+
+.download-module ul {
+  width:100%;
+  padding:0 5.5%;
+}
+
+.download-module li {
+  display:inline-block;
+  float:left;
+  width:47%;
+  height:46px;
+  padding-left:15%;
+  border-radius:8px;
+  background:#333 url(/static/images/wapsite/cssimage/android-icon.png) no-repeat 10% center scroll;
+  background-size:28px;
+  cursor:pointer;
+}
+
+.download-module li:last-child {
+  float:right;
+}
+
+.download-module li.ios {
+  background-image:url(/static/images/wapsite/cssimage/ios-icon.png);
+  background-size:24px;
+}
+  
+.download-module li p {
+  height:16px;
+  overflow:hidden;
+  font-size:12px;
+  line-height:16px;
+  margin-top:4px;
+  color:#FFF;
+}
+
+.download-module li h1 {
+  color: #FFF;
+  font-size:22px;
+}

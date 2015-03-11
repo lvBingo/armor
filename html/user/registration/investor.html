@@ -28,122 +28,319 @@
     <link rel="canonical" href="页面权威链接，待编辑" />
     <!-- META WT -->
 
-    <title>投资人注册 | 天使汇 | 让靠谱的项目找到靠谱的钱 | 创业，投资，找VC就上天使汇 | 中国股权众筹第一平台</title>
+    <title>和投资界大咖一起合投项目 | 天使汇 | 创业，投资，找VC就上天使汇 | 中国股权众筹第一平台</title>
     <link href="/static/css/wapsite/base-css.css" rel="stylesheet" />
     <link href="/static/css/wapsite/user/registration/style.css" rel="stylesheet" />
 
     <script src="/static/js/lib/jquery-1.11.1.min.js"></script>
     <script src="/static/js/wapsite/angelcrunch.jq.c.js"></script>
     <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
+    <script src="/static/js/lib/image_upload.min.js"></script>
+    <script src="/static/js/wapsite/angelcrunch.image_tools.jq.c.js"></script>
+    <script type="text/javascript" id="data-setting">
+    var page = window.page || {};
+    page.settings = {
+        AjaxDomain: "mobile.tonghs.me",
+    }
+    </script>
     <script type="text/javascript" id="page-interactive-init">
         var page = window.page || {};
         page.MethodObj = function () { };
         page.MethodObj.prototype = (function () {
+            var settings = page.settings;
             var I = {
-                Ajax_img: {                     // Login service
-                    url: "http://mobile.tonghs.me/v2/settings/upload_img",
+                Ajax_SMS: {                     // Short message service
+                    url: "http://" + settings.AjaxDomain + "/v2/home/m_verify_code",
                     basic_data: {
-
                     }
-                }
+                },
+                Ajax_verify_code: {             // Checked verify code
+                    url: "http://" + settings.AjaxDomain + "/v2/home/m_verify_phone_code",
+                    basic_data: {
+                    }
+                },
+                Ajax_form_submit: {             // Form submit
+                    url: "http://" + settings.AjaxDomain + "/v2/user/m_angel_apply",
+                    basic_data: {
+                    }
+                },
+                current_mobile: ""
             };
 
             var waste_9839213 = function () {
-                var className={
-                    account: "#account",
-                    pwd: "#pwd",
-                    btn: "#subbmit-btn",
-                    notification:".notification",
-                    // state
-                    active:"active"
+                var className = {
+                    input: {
+                        user_name: "#user-name",
+                        phone: "#phone",
+                        verify_code: "#verify-code",
+                        pwd: "#pwd"
+                    },
+                    file: {
+                        avatar: "#avatar-file",
+                        palyground_files: ":file.hidden",
+                    },
+                    btn: {
+                        file_uploader: ".image-uploader",
+                        id_card: "#id-card",
+                        name_card: "#name-card",
+                        SMS: "#verify-btn",
+                        submit: "#subbmit-btn"
+                    },
+                    avatar: "#user-avatar",
+                    palyground_image: ".image-container",
+                    avatar_state: "#avatar-upload-state",
+                    notification: ".notification"
+                },
+                state = {
+                    loading: "loading",
+                    disable: "disable",
+                    checking: "checking",
+                    again:"again-js",
+                    active: "active"
+                },
+                attr = {
+                    txt: "data-warning-text",
+                    image_id: "data-image-id",
+                    prev_file: "data-prev-file",
+                    crop_data: "data-crop",
+                    palyground_id:"data-playground-bind",
+
+                    disabled: "disabled",
+                    Retrieval: function (str) {
+                        return "[" + str + "]";
+                    }
                 };
-                var $account, $pwd, $btn;
-                var $notification;
-                $account = $(className.account),
-                $pwd = $(className.pwd),
-                $btn = $(className.btn);
+
+                var $input = {
+                    user_name: $(className.input.user_name),
+                    phone: $(className.input.phone),
+                    verify_code: $(className.input.verify_code),
+                    pwd: $(className.input.pwd)
+                }, $btn = {
+                    file_uploader: $(className.btn.file_uploader),
+                    id_card: $(className.btn.id_card),
+                    name_card: $(className.btn.name_card),
+                    SMS: $(className.btn.SMS),
+                    submit: $(className.btn.submit)
+                };
+
+                var $avatar, $notification;
+                $avatar = $(className.avatar),
                 $notification = $(className.notification);
+                
+                (function () {                  // About SMS Verify Code
+                    var verify_code_len = 6;
 
-                var checkVal = function () {
-                    if ($account.val() != ""
-                       && $pwd.val().trim().length >= 6) return true;
-                    else return false;
-                };
+                    var txt = {
+                        btn: {
+                            common: "验证",
+                            pass: "验证成功",
+                            waiting: "<i>60</i>秒",
+                            again: "重新验证"
+                        },
+                        verify_failed: "验证码错误"
+                    };
 
-                var checkActive = function () {
-                    if (checkVal()) $btn.addClass(className.active);
-                    else $btn.removeClass(className.active);
-                };
-
-                $("#file").change(function () {
-                    var url = I.Ajax_img.url,
-                            basic_data = I.Ajax_img.basic_data,
-                                  type = "jsonp";
-                    var _data = $.extend(true, {}, basic_data);
-
-                    var formdata = new FormData();
-                    
-                    var fileObj = $(this)[0].files;
-                    formdata.append("imgFile", fileObj[0]);
-
-                    $.ajax({
-                        url: url,
-                        data: formdata,
-                        cache: false,
-                        //enctype: 'multipart/form-data',
-                        contentType: false,
-                        processData: false,
-                        type:"post",
-                        dataType: "jsonp",
-                        success: function (data) {
-                            alert(1);
-                            if (data.success == 0) {
-                                
+                    $input.phone.change(function () {
+                        var _value = $(this).val().trim();
+                        var regex = $.Angelcrunch.regexStr.phone;
+                        if (!regex.test(_value)) {
+                            $input.verify_code.addClass(state.disable);
+                        }
+                    })
+                    .keyup(function () {
+                        var _value = $(this).val().trim();
+                        var regex = $.Angelcrunch.regexStr.phone;
+                        if (regex.test(_value)) {
+                            if (_value == I.current_mobile) {
+                                $btn.SMS.text(txt.btn.pass).addClass(state.disable);
+                                $input.verify_code.attr(attr.disabled, attr.disabled);
+                            } else {
+                                if (!$btn.SMS.hasClass(state.checking)) {
+                                    $btn.SMS.text(txt.btn.common).removeClass(state.disable);
+                                }
                             }
                         }
-                    });
+                        else {
+                            $btn.SMS.addClass(state.disable);
+                        }
+                    })
 
-                    //$.post(url, _data, function (data) {
-                    //    if (data.success) {
-                    //        alert(1);
-                    //    } else if (data.success == false)
-                    //        $notification.notificationToggle();
-                    //    else
-                    //        throw new Error("An unknown error, the error code is E821928234");
-                    //}, type);
 
-                });
-
-                $btn.click(function () {
-                    if ($(this).hasClass(className.active)) {
-                        var url = I.Ajax_login.url,
-                            basic_data = I.Ajax_login.basic_data,
+                    $input.verify_code
+                    .keyup(function () {
+                        var _value = $(this).val().trim();
+                        var len = verify_code_len,
+                            url = I.Ajax_verify_code.url,
+                            basic_data = I.Ajax_verify_code.basic_data,
                                   type = "jsonp";
                         var _data = $.extend(true, {}, basic_data);
-                        _data[$account.attr("name")] = $account.val().trim();
-                        _data[$pwd.attr("name")] = $pwd.val().trim();
+                        _data[$input.phone.attr("name")] = $input.phone.val();
+                        _data[$input.verify_code.attr("name")] = _value;
+
+                        if (_value.length == len) {     // Verify Code Ajax
+                            $.post(url, _data, function (data) {
+                                if (data.success) {
+                                    $input.verify_code.attr(attr.disabled, attr.disabled);
+                                    $btn.SMS.text(txt.btn.pass).addClass(state.disable).removeClass(state.again + " " + state.checking);
+                                    I.current_mobile = $input.phone.val();
+                                    checkActive();
+                                }
+                                else
+                                    $notification.notificationToggle(data.message);
+                            }, type);
+                        } else;
+                    })
+
+                    $btn.SMS.click(function () {    // SMS Ajax
+                        if ($(this).hasClass(state.disable)) return;
+                        I.current_mobile = "";
+                        var url = I.Ajax_SMS.url,
+                            basic_data = I.Ajax_SMS.basic_data,
+                            type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        _data[$input.phone.attr("name")] = $input.phone.val();
+
+                        if (!$(this).hasClass(state.again))
+                            $input.verify_code.removeAttr(attr.disabled).val("");
+
+                        $btn.SMS.html(txt.btn.waiting).addClass(state.checking + " " + state.disable);
+                        changeTime();
+                        $.post(url, _data, function (data) { }, type);
+                    })
+                    var timehandle;
+                    var changeTime = function () {
+                        clearInterval(timehandle);
+                        timehandle = setInterval(function () {
+                            var time = parseInt($btn.SMS.find("i").text());
+                            time--;
+                            time = time < 10 && time > 0 ? "0" + time : time;
+                            if (time <= 0)
+                                cancelTimeChanged();
+                            else
+                                $btn.SMS.find("i").text(time);
+                        }, 1000);
+                    };
+
+                    var cancelTimeChanged = function () {
+                        clearInterval(timehandle);
+                        $btn.SMS.text(txt.btn.again).removeClass(state.checking);
+
+                        var _value = $input.phone.val().trim();
+                        var regex = $.Angelcrunch.regexStr.phone;
+                        if (!regex.test(_value)) {
+                            $btn.SMS.addClass(state.disable);
+                            $input.verify_code.attr(attr.disabled, attr.disabled);
+                        } else
+                            $btn.SMS.removeClass(state.disable).addClass(state.again);
+                    }
+
+                    // Initialization
+                    $input.phone.val("");
+                    $input.verify_code.attr(attr.disabled, attr.disabled).val("");
+                    $btn.SMS.addClass(state.disable);
+                }).call(this);                  // About SMS Verify Code ENDED
+
+                var formChecked = function (showNotification) {
+                    var canSubmit = true;
+                    $(attr.Retrieval(attr.txt)).each(function () {
+                        var txt, image_id;
+                        txt = $(this).attr(attr.txt),
+                        image_id = $(this).attr(attr.image_id);
+
+                        if ((image_id == "")
+                            || ($(this).is(":checkbox")
+                                && !$(this).is(":checked"))
+                            || ($(this).is("input")
+                                && !$(this).val())) {
+                            if (showNotification)
+                                $notification.notificationToggle(txt);
+                            return (canSubmit = false);
+                        }
+                    });
+                    if (!canSubmit) return canSubmit;
+
+                    if ($input.pwd.val().length < 6){ 
+                        if (showNotification)
+                            $notification.notificationToggle($input.pwd.attr(attr.txt));
+                        canSubmit = false;
+                    }
+                    if (!($input.phone.val()
+                        && $btn.SMS.hasClass(state.disable)
+                        && $input.verify_code.val()
+                        && $input.verify_code.attr(attr.disabled))) {
+                        if (showNotification)
+                            $notification.notificationToggle($input.verify_code.attr(attr.txt));
+                        canSubmit = false;
+                    }
+                    return canSubmit;
+                };
+
+
+                var checkActive = function (showNotification) {
+                    if (formChecked(showNotification)) $btn.submit.addClass(state.active);
+                    else $btn.submit.removeClass(state.active);
+                };
+
+                $btn.submit.click(function () {
+                    checkActive(true);
+                    if ($(this).hasClass(state.active)) {
+                        var url = I.Ajax_form_submit.url,
+                            basic_data = I.Ajax_form_submit.basic_data,
+                                  type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        _data[$input.user_name.attr("name")] = $input.user_name.val().trim();
+                        _data[$input.pwd.attr("name")] = $input.pwd.val().trim();
+                        _data[$input.phone.attr("name")] = $input.phone.val().trim();
+                        _data[$input.verify_code.attr("name")] = $input.verify_code.val().trim();
+
+                        _data["logo"] = $avatar.attr(attr.image_id);
+                        _data["crop"] = $avatar.attr(attr.crop_data);
+                        _data["id_card"] = $btn.id_card.attr(attr.image_id);
+                        _data["name_card"] = $btn.name_card.attr(attr.image_id) || 0;
 
                         $.post(url, _data, function (data) {
-                            if (data.user) {
-                                $.Angelcrunch.dataSet.operation.setUser(data.user);
-                                $.Angelcrunch.COOKIE.operation.setUserKey();
-                                location.href = $.Angelcrunch.url.getSource() || "/";
-                            } else if (data.success == false)
-                                $notification.notificationToggle();
-                            else
-                                throw new Error("An unknown error, the error code is E821928234");
+                            if (data.success) {
+                                location.href = $btn.submit.attr("data-redirect");
+                            } else
+                                $notification.notificationToggle(data.message);
                         }, type);
                     };
                     return false;
                 });
 
+                (function () {                      // About Password Operation
+                    var $eye = $input.pwd.closest("label").find(".eye");
+                    // Mobile
+                    $eye[0].addEventListener('touchstart', function () {
+                        $input.pwd.attr("type", "text");
+                    }, false);
+                    $eye[0].addEventListener('touchend', function (e) {
+                        e.preventDetault();
+                        $input.pwd.attr("type", "password");
+                    }, false);
+                    // PC
+                    $eye.mousedown(function () {
+                        $input.pwd.attr("type", "text");
+                    }).mouseup(function () {
+                        $input.pwd.attr("type", "password");
+                    }).mousemove(function () {
+                        $input.pwd.attr("type", "password");
+                    });
+                }).call(this);
 
-                $account.keyup(function () {
+
+
+                $(".registration input:not(.hidden)").keyup(function () {
                     checkActive();
                 });
-                $pwd.keyup(function () {
+
+                $("#legal-terms").change(function () {
                     checkActive();
                 });
+
+                $.Angelcrunch.ImageUploadInit(checkActive);
+                
                 // Page load ready checked
                 checkActive();
             }
@@ -175,7 +372,7 @@
 </head>
 <body>
     <div class="details">
-        <div class="notification red">登录名和密码不匹配 <i class="close">×</i></div>
+        <div class="notification red"><i class="txt"></i><i class="close">×</i></div>
         <div class="slogan">
             <h1>发现下一个阿里巴巴</h1>
             <p>天使汇--中国股权众筹第一平台，目前已经有超过2000位认证投资人,超过300个项目完成30亿元的融资。</p>
@@ -228,39 +425,86 @@
                 </ul>
             </section>
         </div>
-        <div class="registration">
+        <div class="registration modules">
             <!-- Back-up form -->
-            <form action="/" method="post">
-                <input id="file" type="file" name="name" value="" />
-                <img id="image" src="" alt="Alternate Text" />
-                <label><span>真实姓名</span><i><input id="account" type="text" name="account" value="" /></i></label>
-                <label><span>手机号码</span><i><input id="phone" type="text" name="account" value="" /></i></label>
-                <label><span>上传个人名片</span><i><input id="card" type="text" name="account" value="" /></i></label>
-                <label><span>密码</span><i><input id="pwd" type="text" name="account" value="" /></i></label>
-                <label><span>输入短信验证码</span><i><input id="verify-code" type="text" name="account" value="" /></i></label>
-                <div class="addition-agreement">
-                    <p>我已知晓 <a href="" data-confirm-dialogue="你将跳转至《天使汇在线投资服务协议》页面，确定吗?">《天使汇在线投资服务协议》</a> 及其附件 <a href="" data-confirm-dialogue="你将跳转至《风险揭示书》页面，确定吗?">《风险揭示书》</a> 中的所有内容 ，并愿意自己承担投资带来的风险。</p>
-                    <div class="modules">
-                        <div class="mentos-container">
-                            <label class="label">
-                                <input id="legal-terms" class="mentos" type="checkbox" name="additionalAgreement" value="1" />
-                                <em class="tracks">
-                                    <em class="slider-button">
-                                        <i>×</i>
-                                        <i></i>
-                                    </em>
+            <div class="avatar-area">
+                <h1>申请成为天使汇认证投资人</h1>
+                <p>申请成功后可查看项目详细信息、约谈项目，参与投资2015年，天使汇诚邀你的加入，成为下一个孙正义</p>
+                <div id="user-avatar" class="avatar" data-warning-text="需要上传头像" data-image-id="">
+                </div>
+                <p id="avatar-upload-state">上传头像</p>
+                <input accept="image/*" id="avatar-file" class="hidden" type="file" name="name" value="" />
+            </div>
+
+            <label>
+                <span>真实姓名</span>
+                <i><input id="user-name" type="text" name="name" value="" data-warning-text="需要填写姓名" /></i>
+            </label>
+
+            <label>
+                <span>上传个人名片</span>
+                <i><button id="id-card" class="btn image-uploader" data-playground-bind="#cards-files" data-warning-text="需要上传名片" data-image-id="">开始上传</button></i>
+            </label>
+            <div id="cards-files" class="upload-playground">
+                <input accept="image/*" class="hidden" type="file" name="cards" value="" />
+                <p>名片预览</p>
+                <div class="image-container loading">
+                </div>
+            </div>
+            <label>
+                <span>手机号码</span>
+                <i>
+                    <input id="phone" type="tel" name="phone" value="" data-warning-text="需要填写11位的大陆手机号码" maxlength="11" />
+                    <button id="verify-btn" class="btn">验证</button>
+                </i>
+            </label>
+
+            <label>
+                <span>输入短信验证码</span>
+                <i><input id="verify-code" type="tel" name="code" value="" maxlength="6" data-warning-text="手机号码需要通过验证" placeholder="发送验证后填写6位验证码" /></i>
+            </label>
+
+            <label>
+                <span>密码</span>
+                <i><input id="pwd" type="password" name="password" value="" data-warning-text="需要填写一个6位以上的密码" maxlength="16" /><em class="vector-icons eye"></em></i>
+            </label>
+
+            <label>
+                <span>上传身份证照片（非必选）</span>
+                <i><button id="name-card" class="btn image-uploader" data-playground-bind="#id-card-files" data-image-id="">开始上传</button></i>
+            </label>
+            <div id="id-card-files" class="upload-playground">
+                <input accept="image/*" class="hidden" type="file" name="cards" value="" />
+                <p>身份证预览</p>
+                <div class="image-container loading">
+                </div>
+            </div>
+
+            <div class="addition-agreement">
+                <p>我已知晓 <a href="http://static.angelcrunch.com/agreement.pdf" target="_blank" data-confirm-dialogue="你确定要跳转至《天使汇在线投资服务协议》页面吗?">《天使汇在线投资服务协议》</a> 及其附件 <a href="/html/user/agreement/risk_agreement.html" target="_blank" data-confirm-dialogue="你确定要跳转至《风险揭示书》页面吗?">《风险揭示书》</a> 中的所有内容 ，并愿意自己承担投资带来的风险。</p>
+                <div class="modules">
+                    <div class="mentos-container">
+                        <label class="label">
+                            <input id="legal-terms" class="mentos" type="checkbox" name="additionalAgreement" value="1" data-warning-text="需要同意天使汇用户协议" />
+                            <em class="tracks">
+                                <em class="slider-button">
+                                    <i>×</i>
+                                    <i></i>
                                 </em>
-                            </label>
-                        </div>
+                            </em>
+                        </label>
                     </div>
                 </div>
-                <button id="subbmit-btn" class="btn submit-btn"></button>
-            </form>
+            </div>
+            <button id="subbmit-btn" class="btn submit-btn" data-redirect="/html/state_pages/investor_registration_success.html"></button>
         </div>
         <div class="banner-footer">
             <p>AngelCrunch.com</p>
             <p>天使汇 - 让靠谱的项目找到靠谱的钱</p>
         </div>
+    </div>
+    <div id='wx_pic' style='margin:0 auto;display:none;'>
+        <img src="/static/images/wapsite/231937129837912.jpg" />
     </div>
 </body>
 </html>

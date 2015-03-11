@@ -167,6 +167,7 @@ $.fn.keyCode_enter_bind = function (fn) {
 };
 
 $.fn.input_text_autocomplete = function (turn_on) {
+    if ($(this).attr("autocomplete")) return 0;
     var auto = turn_on ? "on" : "off";
     $(this).attr("autocomplete", auto);
 };
@@ -371,4 +372,6 @@ $(function () {
     $.Angelcrunch.notificationInit();
     $.Angelcrunch.formModules();
     $.Angelcrunch.linkBtnInit();
+
+    $("input").input_text_autocomplete();
 })
