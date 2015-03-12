@@ -201,11 +201,10 @@
                         var _data = $.extend(true, {}, basic_data);
                         _data[$input.phone.attr("name")] = $input.phone.val();
 
-                        if (!$(this).hasClass(state.again))
-                            $input.verify_code.removeAttr(attr.disabled).val("");
-
                         $.post(url, _data, function (data) {
                             if (data.success) {
+                                if (!$btn.SMS.hasClass(state.again))
+                                    $input.verify_code.removeAttr(attr.disabled).val("");
                                 $btn.SMS.html(txt.btn.waiting).addClass(state.checking + " " + state.disable);
                                 changeTime();
                             } else
