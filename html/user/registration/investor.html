@@ -33,6 +33,10 @@
     <link href="/static/css/wapsite/user/registration/style.css" rel="stylesheet" />
 
     <script src="/static/js/lib/jquery-1.11.1.min.js"></script>
+
+    <script src="/static/js/lib/module.js"></script>
+    <script src="/static/js/lib/uploader.js"></script>
+
     <script src="/static/js/wapsite/angelcrunch.jq.c.js"></script>
     <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
     <script src="/static/js/lib/image_upload.min.js"></script>
@@ -44,6 +48,17 @@
     }
     </script>
     <script type="text/javascript" id="page-interactive-init">
+
+        var uploader = simple.uploader({});
+        uploader.on('uploadcomplete', function(e, file, r){
+            o = $.parseJSON(r)
+            console.log(e);
+            console.log(file);
+            console.log(r)
+            console.log(get_crop(r));
+            console.log('http://dn-tonghs.qbox.me/' + o.key + '?imageMogr2/crop/!' + get_crop(r));
+        });
+
         var page = window.page || {};
         page.MethodObj = function () { };
         page.MethodObj.prototype = (function () {
@@ -174,6 +189,7 @@
                             url = I.Ajax_verify_code.url,
                             basic_data = I.Ajax_verify_code.basic_data,
                                   type = "jsonp";
+<<<<<<< HEAD
                         var _data = $.extend(true, {}, basic_data);
                         _data[$input.phone.attr("name")] = $input.phone.val();
                         _data[$input.verify_code.attr("name")] = _value;
@@ -262,6 +278,33 @@
                         }
                     });
                     if (!canSubmit) return canSubmit;
+=======
+                    var _data = $.extend(true, {}, basic_data);
+
+                    uploader.upload(this.files);
+                    
+                    //var formdata = new FormData();
+                    
+                    //var fileObj = $(this)[0].files;
+                    //formdata.append("imgFile", fileObj[0]);
+
+                    //$.ajax({
+                    //    url: url,
+                    //    data: formdata,
+                    //    cache: false,
+                    //    //enctype: 'multipart/form-data',
+                    //    contentType: false,
+                    //    processData: false,
+                    //    type:"post",
+                    //    dataType: "jsonp",
+                    //    success: function (data) {
+                    //        alert(1);
+                    //        if (data.success == 0) {
+                    //            
+                    //        }
+                    //    }
+                    //});
+>>>>>>> 0c217ba0af0b4146aa21e3bf3bb0603e64e6ffc8
 
                     if ($input.pwd.val().length < 6){ 
                         if (showNotification)
