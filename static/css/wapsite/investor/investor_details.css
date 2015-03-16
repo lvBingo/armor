@@ -34,11 +34,13 @@
 .pesonal-summary {
   position:relative;
   width: 100%;
+  min-height:246px;
   padding: 0px;
   text-align: center;
   top:0;
   background:#21395C;
   z-index:88;
+  overflow:hidden;
 }
 
 .pesonal-summary .layer {
@@ -57,6 +59,7 @@
   width: 25%;
   min-width:90px;
   max-width:125px;
+  min-height:90px;
   border-radius:50%;
   border:2px solid #FFF;
 }
@@ -70,11 +73,13 @@
 
 .pesonal-summary .summary h1 {
   color:#FFF;
+  min-height:32px;
   font-size: 24px;
-  line-height: 30px;
+  line-height: 32px;
 }
 
 .pesonal-summary .summary p {
+  min-height:18px;
   color:#F37F2B;
   font-size: 16px;
   line-height: 18px;
@@ -82,11 +87,24 @@
   margin-bottom: 2px;
 }
 
+.pesonal-summary .summary p:empty {
+  display:none;
+}
+
 .pesonal-summary .summary p.extra {
+  min-height:48px;
   color: #FFF;
   font-size: 12px;
   margin-top: 8px;
   text-align:justify;
+}
+
+.pesonal-summary .summary p.extra.bigger-font {
+  font-size:14px;
+}
+
+.pesonal-summary .summary p.extra.align-center {
+  text-align:center;
 }
 
 .pesonal-summary .rs-bkg {
@@ -207,7 +225,7 @@
 
 .fund-paln {
   margin-top:1px;
-  padding:32px 9.2% 30px;
+  padding:32px 8.4% 30px 9.2%;
   background:#EEE;
 }
 
@@ -224,12 +242,12 @@
 }
 
 .fund-paln .plan li {
+  width:46%;
   height:54px;
-  width:48%;
 }
 
 .fund-paln .plan li:last-child {
-  width:52%;
+  width:54%;
   border-left:1px solid #F3F3F3;
 }
 
@@ -298,10 +316,15 @@
   margin-top:18px;
 }
 
-.fund-paln > p i {
+.fund-paln > p em {
   color:#333;
+  font-size:12px;
   font-weight:700;
   margin:0 2px;
+}
+
+.fund-paln > p b {
+  margin:0 1px;
 }
 
 .page-action {

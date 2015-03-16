@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -33,32 +33,13 @@
     <link href="/static/css/wapsite/user/registration/style.css" rel="stylesheet" />
 
     <script src="/static/js/lib/jquery-1.11.1.min.js"></script>
-
-    <script src="/static/js/lib/module.js"></script>
-    <script src="/static/js/lib/uploader.js"></script>
-
     <script src="/static/js/wapsite/angelcrunch.jq.c.js"></script>
     <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
     <script src="/static/js/lib/image_upload.min.js"></script>
     <script src="/static/js/wapsite/angelcrunch.image_tools.jq.c.js"></script>
-    <script type="text/javascript" id="data-setting">
-    var page = window.page || {};
-    page.settings = {
-        AjaxDomain: "mobile.angelcrunch.com",
-    }
-    </script>
+    <script src="/static/js/wapsite/angelcrunch.sendsms_verify.jq.c.js"></script>
+    
     <script type="text/javascript" id="page-interactive-init">
-
-        var uploader = simple.uploader({});
-        uploader.on('uploadcomplete', function(e, file, r){
-            o = $.parseJSON(r)
-            console.log(e);
-            console.log(file);
-            console.log(r)
-            console.log(get_crop(r));
-            console.log('http://dn-tonghs.qbox.me/' + o.key + '?imageMogr2/crop/!' + get_crop(r));
-        });
-
         var page = window.page || {};
         page.MethodObj = function () { };
         page.MethodObj.prototype = (function () {
@@ -81,7 +62,6 @@
                 },
                 current_mobile: ""
             };
-
             var waste_9839213 = function () {
                 var className = {
                     input: {
@@ -119,13 +99,11 @@
                     prev_file: "data-prev-file",
                     crop_data: "data-crop",
                     palyground_id:"data-playground-bind",
-
                     disabled: "disabled",
                     Retrieval: function (str) {
                         return "[" + str + "]";
                     }
                 };
-
                 var $input = {
                     user_name: $(className.input.user_name),
                     phone: $(className.input.phone),
@@ -138,196 +116,61 @@
                     SMS: $(className.btn.SMS),
                     submit: $(className.btn.submit)
                 };
-
                 var $avatar, $notification;
                 $avatar = $(className.avatar),
                 $notification = $(className.notification);
                 
-                (function () {                  // About SMS Verify Code
-                    var verify_code_len = 6;
-
-                    var txt = {
-                        btn: {
-                            common: "验证",
-                            pass: "验证成功",
-                            waiting: "<i>60</i>秒",
-                            again: "重新验证"
-                        },
-                        verify_failed: "验证码错误"
-                    };
-
-                    $input.phone.change(function () {
-                        var _value = $(this).val().trim();
-                        var regex = $.Angelcrunch.regexStr.phone;
-                        if (!regex.test(_value)) {
-                            $input.verify_code.addClass(state.disable);
-                        }
-                    })
-                    .keyup(function () {
-                        var _value = $(this).val().trim();
-                        var regex = $.Angelcrunch.regexStr.phone;
-                        if (regex.test(_value)) {
-                            if (_value == I.current_mobile) {
-                                $btn.SMS.text(txt.btn.pass).addClass(state.disable);
-                                $input.verify_code.attr(attr.disabled, attr.disabled);
-                            } else {
-                                if (!$btn.SMS.hasClass(state.checking)) {
-                                    $btn.SMS.text(txt.btn.common).removeClass(state.disable);
-                                }
+                // Check the button can be Active
+                var checkActive = (function () {
+                    var formChecked = function (showNotification) {
+                        var canSubmit = true;
+                        $(attr.Retrieval(attr.txt)).each(function () {
+                            var txt, image_id;
+                            txt = $(this).attr(attr.txt),
+                            image_id = $(this).attr(attr.image_id);
+                            if ((image_id == "")
+                                || ($(this).is(":checkbox")
+                                    && !$(this).is(":checked"))
+                                || ($(this).is("input")
+                                    && !$(this).val())) {
+                                if (showNotification)
+                                    $notification.notificationToggle(txt);
+                                return (canSubmit = false);
                             }
-                        }
-                        else {
-                            $btn.SMS.addClass(state.disable);
-                        }
-                    })
-
-
-                    $input.verify_code
-                    .keyup(function () {
-                        var _value = $(this).val().trim();
-                        var len = verify_code_len,
-                            url = I.Ajax_verify_code.url,
-                            basic_data = I.Ajax_verify_code.basic_data,
-                                  type = "jsonp";
-<<<<<<< HEAD
-                        var _data = $.extend(true, {}, basic_data);
-                        _data[$input.phone.attr("name")] = $input.phone.val();
-                        _data[$input.verify_code.attr("name")] = _value;
-
-                        if (_value.length == len) {     // Verify Code Ajax
-                            $.post(url, _data, function (data) {
-                                if (data.success) {
-                                    $input.verify_code.attr(attr.disabled, attr.disabled);
-                                    $btn.SMS.text(txt.btn.pass).addClass(state.disable).removeClass(state.again + " " + state.checking);
-                                    I.current_mobile = $input.phone.val();
-                                    checkActive();
-                                }
-                                else
-                                    $notification.notificationToggle(data.message);
-                            }, type);
-                        } else;
-                    })
-
-                    $btn.SMS.click(function () {    // SMS Ajax
-                        if ($(this).hasClass(state.disable)) return;
-                        I.current_mobile = "";
-                        var url = I.Ajax_SMS.url,
-                            basic_data = I.Ajax_SMS.basic_data,
-                            type = "jsonp";
-                        var _data = $.extend(true, {}, basic_data);
-                        _data[$input.phone.attr("name")] = $input.phone.val();
-
-                        $.post(url, _data, function (data) {
-                            if (data.success) {
-                                if (!$btn.SMS.hasClass(state.again))
-                                    $input.verify_code.removeAttr(attr.disabled).val("");
-                                $btn.SMS.html(txt.btn.waiting).addClass(state.checking + " " + state.disable);
-                                changeTime();
-                            } else
-                                $notification.notificationToggle(data.message);
-                        }, type);
-                    })
-                    var timehandle;
-                    var changeTime = function () {
-                        clearInterval(timehandle);
-                        timehandle = setInterval(function () {
-                            var time = parseInt($btn.SMS.find("i").text());
-                            time--;
-                            time = time < 10 && time > 0 ? "0" + time : time;
-                            if (time <= 0)
-                                cancelTimeChanged();
-                            else
-                                $btn.SMS.find("i").text(time);
-                        }, 1000);
-                    };
-
-                    var cancelTimeChanged = function () {
-                        clearInterval(timehandle);
-                        $btn.SMS.text(txt.btn.again).removeClass(state.checking);
-
-                        var _value = $input.phone.val().trim();
-                        var regex = $.Angelcrunch.regexStr.phone;
-                        if (!regex.test(_value)) {
-                            $btn.SMS.addClass(state.disable);
-                            $input.verify_code.attr(attr.disabled, attr.disabled);
-                        } else
-                            $btn.SMS.removeClass(state.disable).addClass(state.again);
-                    }
-
-                    // Initialization
-                    $input.phone.val("");
-                    $input.verify_code.attr(attr.disabled, attr.disabled).val("");
-                    $btn.SMS.addClass(state.disable);
-                }).call(this);                  // About SMS Verify Code ENDED
-
-                var formChecked = function (showNotification) {
-                    var canSubmit = true;
-                    $(attr.Retrieval(attr.txt)).each(function () {
-                        var txt, image_id;
-                        txt = $(this).attr(attr.txt),
-                        image_id = $(this).attr(attr.image_id);
-
-                        if ((image_id == "")
-                            || ($(this).is(":checkbox")
-                                && !$(this).is(":checked"))
-                            || ($(this).is("input")
-                                && !$(this).val())) {
+                        });
+                        if (!canSubmit) return canSubmit;
+                        if ($input.pwd.val().length < 6) {
                             if (showNotification)
-                                $notification.notificationToggle(txt);
-                            return (canSubmit = false);
+                                $notification.notificationToggle($input.pwd.attr(attr.txt));
+                            canSubmit = false;
                         }
-                    });
-                    if (!canSubmit) return canSubmit;
-=======
-                    var _data = $.extend(true, {}, basic_data);
-
-                    uploader.upload(this.files);
-                    
-                    //var formdata = new FormData();
-                    
-                    //var fileObj = $(this)[0].files;
-                    //formdata.append("imgFile", fileObj[0]);
-
-                    //$.ajax({
-                    //    url: url,
-                    //    data: formdata,
-                    //    cache: false,
-                    //    //enctype: 'multipart/form-data',
-                    //    contentType: false,
-                    //    processData: false,
-                    //    type:"post",
-                    //    dataType: "jsonp",
-                    //    success: function (data) {
-                    //        alert(1);
-                    //        if (data.success == 0) {
-                    //            
-                    //        }
-                    //    }
-                    //});
->>>>>>> 0c217ba0af0b4146aa21e3bf3bb0603e64e6ffc8
-
-                    if ($input.pwd.val().length < 6){ 
-                        if (showNotification)
-                            $notification.notificationToggle($input.pwd.attr(attr.txt));
-                        canSubmit = false;
-                    }
-                    if (!($input.phone.val()
-                        && $btn.SMS.hasClass(state.disable)
-                        && $input.verify_code.val()
-                        && $input.verify_code.attr(attr.disabled))) {
-                        if (showNotification)
-                            $notification.notificationToggle($input.verify_code.attr(attr.txt));
-                        canSubmit = false;
-                    }
-                    return canSubmit;
-                };
-
-
-                var checkActive = function (showNotification) {
-                    if (formChecked(showNotification)) $btn.submit.addClass(state.active);
-                    else $btn.submit.removeClass(state.active);
-                };
-
+                        if (!($input.phone.val()
+                            && $btn.SMS.hasClass(state.disable)
+                            && $input.verify_code.val()
+                            && $input.verify_code.attr(attr.disabled))) {
+                            if (showNotification)
+                                $notification.notificationToggle($input.verify_code.attr(attr.txt));
+                            canSubmit = false;
+                        }
+                        console.log(canSubmit);
+                        return canSubmit;
+                    };
+                    return function (showNotification) {
+                        if (formChecked(showNotification)) $btn.submit.addClass(state.active);
+                        else $btn.submit.removeClass(state.active);
+                    };
+                }).call(this);                        // Check the button can be Active Ended
+                // SMS initi
+                (function () {
+                    var conf = $.Angelcrunch.SMS_Verify.settings;
+                    conf.$btn = $btn;
+                    conf.$input = $input;
+                    conf.$notification = $notification;
+                    conf.Ajax.Ajax_SMS = I.Ajax_SMS;
+                    conf.Ajax.Ajax_verify_code = I.Ajax_verify_code;
+                    $.Angelcrunch.SMS_Verify.init(checkActive);
+                }).call(this);
+                // Submit button
                 $btn.submit.click(function () {
                     checkActive(true);
                     if ($(this).hasClass(state.active)) {
@@ -339,12 +182,10 @@
                         _data[$input.pwd.attr("name")] = $input.pwd.val().trim();
                         _data[$input.phone.attr("name")] = $input.phone.val().trim();
                         _data[$input.verify_code.attr("name")] = $input.verify_code.val().trim();
-
                         _data["logo"] = $avatar.attr(attr.image_id);
                         _data["crop"] = $avatar.attr(attr.crop_data);
                         _data["id_card"] = $btn.id_card.attr(attr.image_id);
                         _data["name_card"] = $btn.name_card.attr(attr.image_id) || 0;
-
                         $.post(url, _data, function (data) {
                             if (data.success) {
                                 location.href = $btn.submit.attr("data-redirect");
@@ -354,7 +195,6 @@
                     };
                     return false;
                 });
-
                 (function () {                      // About Password Operation
                     var $eye = $input.pwd.closest("label").find(".eye");
                     // Mobile
@@ -373,48 +213,36 @@
                     }).mousemove(function () {
                         $input.pwd.attr("type", "password");
                     });
-
                     $input.pwd.focus(function () {
                         $(this).attr("type", "password");
                     });
                 }).call(this);
-
-
-
-                $(".registration input:not(.hidden)").keyup(function () {
+                $(".registration input").not("#verify-code,.hidden").keyup(function () {
                     checkActive();
                 });
-
                 $("#legal-terms").change(function () {
                     checkActive();
                 });
-
                 $.Angelcrunch.ImageUploadInit(checkActive);
-                
                 // Page load ready checked
                 checkActive();
             }
-
             return {
                 attackEvent: function () {
                    waste_9839213();
                 },
-
                 pageLoad_Init: function () {
                 },
-
                 initial: function () {
                     this.pageLoad_Init();
                     this.attackEvent();
                 }
             };
         })();
-
         page.initialBridge = function () {
             var o = new page.MethodObj();
             o.initial();
         }
-
         $(function () {
             page.initialBridge();
         })
@@ -424,8 +252,8 @@
     <div class="details">
         <div class="notification red"><i class="txt"></i><i class="close">×</i></div>
         <div class="slogan">
-            <h1>在天使汇，发现下一个阿里巴巴</h1>
-            <p>天使汇--中国股权众筹第一平台，目前已经有超过2000位认证投资人,超过300个项目完成30亿元的融资。</p>
+            <h1>发现下一个阿里巴巴</h1>
+            <p>天使汇--中国股权众筹第一平台,目前已经有超过2000位认证投资人,超过300个项目完成30亿元的融资。</p>
         </div>
         <div class="stars">
             <section>
@@ -479,7 +307,7 @@
             <!-- Back-up form -->
             <div class="avatar-area">
                 <h1>申请成为天使汇认证投资人</h1>
-                <p>申请成功后可查看项目详细信息、约谈项目，参与投资。2015年，天使汇诚邀你的加入，成为下一个孙正义</p>
+                <p>申请成功后可查看项目详细信息、约谈项目，参与投资2015年，天使汇诚邀你的加入，成为下一个孙正义</p>
                 <div id="user-avatar" class="avatar" data-warning-text="需要上传头像" data-image-id="">
                 </div>
                 <p id="avatar-upload-state">上传头像</p>
@@ -504,14 +332,14 @@
             <label>
                 <span>手机号码</span>
                 <i>
-                    <input id="phone" type="tel" name="phone" value="" data-warning-text="需要填写11位的大陆手机号码" maxlength="11" placeholder="作为天使汇登录账号" />
+                    <input id="phone" type="tel" name="phone" value="" data-warning-text="需要填写11位的大陆手机号码" maxlength="11" placeholder="将作为登录账号" />
                     <button id="verify-btn" class="btn">验证</button>
                 </i>
             </label>
 
             <label>
                 <span>输入短信验证码</span>
-                <i><input id="verify-code" type="tel" name="code" value="" maxlength="6" data-warning-text="手机号码需要通过验证" placeholder="输入6位验证码" /></i>
+                <i><input id="verify-code" type="tel" name="code" value="" maxlength="6" data-warning-text="手机号码需要通过验证" placeholder="发送验证后填写6位验证码" /></i>
             </label>
 
             <label>
@@ -531,7 +359,7 @@
             </div>
 
             <div class="addition-agreement">
-                <p>我已知晓 <a href="http://static.angelcrunch.com/agreement.pdf" target="_blank" data-confirm-dialogue="你确定要跳转至《天使汇在线投资服务协议》页面吗?">《天使汇在线投资服务协议》</a> 及其附件 <a href="http://help.angelcrunch.com/risk" target="_blank" data-confirm-dialogue="你确定要跳转至《风险揭示书》页面吗?">《风险揭示书》</a> 中的所有内容 ，并愿意自己承担投资带来的风险。</p>
+                <p>我已知晓 <a href="http://static.angelcrunch.com/agreement.pdf" target="_blank" data-confirm-dialogue="你确定要跳转至《天使汇在线投资服务协议》页面吗?">《天使汇在线投资服务协议》</a> 及其附件 <a href="/html/user/agreement/risk_agreement.html" target="_blank" data-confirm-dialogue="你确定要跳转至《风险揭示书》页面吗?">《风险揭示书》</a> 中的所有内容 ，并愿意自己承担投资带来的风险。</p>
                 <div class="modules">
                     <div class="mentos-container">
                         <label class="label">

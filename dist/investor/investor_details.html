@@ -37,12 +37,6 @@
     <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
     <script src="/static/js/lib/avalon.mobile.min.js"></script>
 
-    <script type="text/javascript" id="data-setting">
-    var page = window.page || {};
-    page.settings = {
-        AjaxDomain: "mobile.tonghs.me",
-    }
-    </script>
     <script type="text/javascript" id="page-interactive-init">
     var page = window.page || {};
     page.MethodObj = function () { };
@@ -52,7 +46,7 @@
 
         var I = {
             Ajax_investor_details: {                          // Investor Details
-                url: "http://" + settings.AjaxDomain + "/v2/user/detail",
+                url: "http://" + settings.AjaxDomain + "/v2/user/m_detail",
                 basic_data: {}
             },
             API: {
@@ -60,30 +54,41 @@
         };
 
         var waste_2012932 = function () {
+            var sliderTimeHandle = "";
+            var $album = $("#album");
             // Details information
             (function () {
-                if ($COOKIE.operation.isLogin()
-                     && $COOKIE.operation.canViewProjectDetails()) {
-                    var url = I.Ajax_investor_details.url,
-                        basic_data = I.Ajax_investor_details.basic_data,
-                              type = "jsonp";
-                    var _data = $.extend(true, {}, basic_data);
-                    var comid = $.Angelcrunch.url.getComid();
-                    _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
-                    _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
+                var url = I.Ajax_investor_details.url,
+                    basic_data = I.Ajax_investor_details.basic_data,
+                            type = "jsonp";
+                var _data = $.extend(true, {}, basic_data);
+                var userid = $.Angelcrunch.url.getUserId();
+                _data[$COOKIE.cookieName.token] = $.cookie($COOKIE.cookieName.token);
+                _data[$COOKIE.cookieName.user_id] = $.cookie($COOKIE.cookieName.user_id);
 
-                    if (comid) _data["com_id"] = comid;
-                    $.post(url, _data, function (data) {
-                        avalonNS.model.details.data = data;
-                        I.API.changeFellowState(data.is_follow);
-                        if (data.investment_is_send) I.API.changeSendInvestmentState();
+                if (userid) _data["user_id"] = userid;
+                $.post(url, _data, function (data) {
+                    var times = 50;
+                    avalonNS.model.details.data = data;
+                    // Delay calculation method
+                    sliderTimeHandle = setInterval(function () {
+                        if ($album.find("ul > li").length > 0) {
+                            $album.calculateSliderModuleWidth({ rightSpaceWidth: 10 });
+                            times -= 10;
+                        }
+                        if (times < 1) clearInterval(sliderTimeHandle);
+                        times--;
+                    }, 40);
 
-                        $details.addClass("logged");
-                        detailsIsExpand = true;
-                    }, type);
-                }
+                    // I.API.changeFellowState(data.is_follow);
+                    // if (data.investment_is_send) I.API.changeSendInvestmentState();
+                }, type);
             }).call(this);
         };
+
+        var waste12398712 = function () {
+
+        }
 
         return {
             attackEvent: function () {
@@ -91,7 +96,6 @@
             },
 
             pageLoad_Init: function () {
-                $("#album").calculateSliderModuleWidth({rightSpaceWidth:10});
             },
 
             initial: function () {
@@ -114,7 +118,7 @@
     var avalonNS = window.avalonNS || {};
     (function () {
         avalonNS.model = {
-            basicInformation: avalon.define("investor_details", function (vm) {
+            details: avalon.define("investor-details", function (vm) {
                 vm.data = {};
             })
         };
@@ -123,93 +127,75 @@
 
 </head>
 <body>
-    <div class="details">
+    <div class="details" ms-controller="investor-details">
         <div class="pesonal-summary">
             <div class="layer">
-                <div class="avatar"><img src="/static/images/wapsite/100336450.jpg" /></div>
+                <div class="avatar"><img src="" ms-src="data.user.avatar||''" /></div>
                 <div class="summary">
-                    <h1>兰宁羽</h1>
-                    <p>正保远程教育 创始合伙人</p>
-                    <p class="extra">正保远程教育(NYSE:DL)联合创始人，执行董事，高级副总裁，东南大学无线电系毕业，中欧国际工商学院EMBA，分别负责过公司技术、教务、市场等部门，参与公司融资、上市、收购等重大工作。现在负责公司收购的模拟公司创业教育项目。执行董事，高级副总裁，东南大学无线电系毕业，中欧国际工商学院EMBA，分别负责过公司、术分、负责、公司创始人，执行董事，高级副总裁，东南大学无线电系毕业，中欧国 ...</p>
+                    <h1 ms-text="data.user.name"></h1>
+                    <p class="hidden2Visible" ms-text="data.user.company+' '+data.user.title"></p>
+                    <p class="extra" ms-class="bigger-font:data.user.summary.length < 34"
+                       ms-class-1="align-center:data.user.summary.length < 28"
+                       ms-text="data.user.summary.length > 160 ? data.user.summary.substr(0,160) + ' ...' : data.user.summary"></p>
                 </div>
             </div>
             <div class="effect-card">
-                <!--<div class="effect"><img src="/static/images/wapsite/bannerbox.jpg" /></div>-->
-                <div class="rs-bkg"><img src="/static/images/wapsite/bannerbox.jpg" /></div>
+                <div class="rs-bkg" data-0="bottom:0px;" data-600="bottom:-200px;"><img src="/static/images/wapsite/bannerbox.jpg" /></div>
             </div>
         </div>
         <div class="participation">
             <h1>过往投资案例及个人经历</h1>
-            <div id="album" class="slider-container">
+            <div ms-if="data.user.invested_com.length" id="album" class="slider-container">
                 <ul>
-                    <li data-href="http://baidu.com" data-confirm-dialogue="将要跳转至 约拍 项目页面，确定吗？">
-                        <div class="brand"><img src="/static/images/wapsite/192837918237.jpg" /></div>
-                        <h3>约拍</h3>
-                        <p>投资人</p>
-                    </li>
-                    <li>
-                        <div class="brand"><img src="/static/images/wapsite/198273981273.jpg" /></div>
-                        <h3>小猪短租</h3>
-                        <p>投资人</p>
-                    </li>
-                    <li>
-                        <div class="brand"><img src="/static/images/wapsite/129837892173.jpg" /></div>
-                        <h3>正保远程教育</h3>
-                        <p>创始人</p>
-                    </li>
-                    <li>
-                        <div class="brand"><img src="/static/images/wapsite/192837918237.jpg" /></div>
-                        <h3>赞客</h3>
-                        <p>投资人</p>
-                    </li>
-                    <li>
-                        <div class="brand"><img src="/static/images/wapsite/129837892173.jpg" /></div>
-                        <h3>Pudding plus</h3>
-                        <p>投资人</p>
+                    <li ms-repeat="data.user.invested_com" data-href="http://baidu.com" data-confirm-dialogue="将要跳转至项目详情页面，确定吗？">
+                        <div class="brand"><img ms-src="el.logo" /></div>
+                        <h3 ms-text="el.name"></h3>
+                        <p ms-text="el.part==1?'投资人':el.part==2?'领投人':''"></p>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="pesonal-info">
-            <h1>投资理念</h1>
-            <p>有活力有执行力有毅力的团队，有商业模式有创新力有前瞻性的项目。尊重每一个梦想，投资靠谱的人。对于每一个投资的项目在给予全方面的帮助，同时，也尽量去避免不必要的干涉，以合伙人的心态对待每一个创业者。</p>
-            <h3>擅长领域</h3>
-            <ul class="mark-list">
-                <li>移动互联网</li>
-                <li>在线教育</li>
-                <li>分类信息</li>
-                <li>垂直搜索</li>
-                <li>在线网游</li>
-            </ul>
-            <h3>可提供的附加价值</h3>
-            <ul class="mark-list">
-                <li>用户体验指导</li>
-                <li>政府关系</li>
-            </ul>
+            <div ms-if="data.user.style.length">
+                <h1>投资理念</h1>
+                <p ms-text="data.user.style"></p>
+            </div>
+            <div ms-if="data.user.service.length">
+                <h3>可提供的附加价值</h3>
+                <p ms-text="data.user.service"></p>
+            </div>
+            <div ms-if="data.user.tag">
+                <h3>擅长领域</h3>
+                <ul class="mark-list">
+                    <li ms-repeat="data.user.tag.split('·')" ms-text="el">移动互联网</li>
+                </ul>
+            </div>
         </div>
         <div class="fund-paln">
             <ul class="plan">
                 <li>
                     <i></i>
                     <div class="desc">
-                        <p>10<em>个</em></p>
+                        <p ms-html="data.user.count+'<em>个</em>'">0<em>个</em></p>
                         <span>1年内计划投资</span>
                     </div>
                 </li>
                 <li>
                     <i></i>
                     <div class="desc">
-                        <p>10W-50W</p>
+                        <p ms-html="(String(data.user.min_amount) +data.user.max_amount).length > 5 ?
+                           data.user.min_amount + '-' + data.user.max_amount + 'W':
+                           data.user.min_amount + 'W-' + data.user.max_amount + 'W'">0W</p>
                         <span>单个项目投资额</span>
                     </div>
                 </li>
             </ul>
-            <p>我关注<i>北京·上海</i>的<i>移动互联网·在线教育·文化艺术</i>领域的创业项目。</p>
+            <p ms-if="data.user.business">我关注<i ms-html="data.user.region ? '<em>' + data.user.region.join('<b>·</b>') + '</em>的' : ''"></i><em ms-html="data.user.business.split('·').join('<b>·</b>')">移动互联网·在线教育·文化艺术</em>领域的创业项目。</p>
         </div>
         <div class="page-action">
             <div class="btn-group">
-                <button class="btn btn-small white-border" data-btn-reverse-text="已关注">关注该投资人</button>
-                <button class="btn btn-small orange" data-href="www.baidu.com" data-target="_self">打个招呼!</button>
+                <button class="btn btn-small white-border" data-redirect="" data-btn-reverse-text="已关注">关注该投资人</button>
+                <button class="btn btn-small orange ci-link" data-href="www.baidu.com" data-target="_self">提交项目</button>
             </div>
         </div>
     </div>

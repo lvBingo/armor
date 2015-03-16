@@ -37,13 +37,6 @@
     <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
     <script src="/static/js/lib/avalon.mobile.min.js"></script>
 
-    <script type="text/javascript" id="data-setting">
-        var page = window.page || {};
-        page.settings = {
-            AjaxDomain: "mobile.tonghs.me",
-            loginPageURL: "/html/user/login.html" + "?source="
-        }
-    </script>
     <script type="text/javascript" id="page-interactive-init">
         var page = window.page || {};
         page.MethodObj = function () { };
@@ -407,11 +400,11 @@
                 <p class="declare can-not-view-marked">想查看项目详细信息、成长数据、商业计划书等重要信息，你需要在电脑上打开天使汇网站申请投资人身份。</p>
                 <div class="control-module">
                     <em><i></i>天使汇认证投资人</em>
-                    <button class="btn btn-small login-btn" data-href="/html/user/login.html?source=">登录</button>
+                    <button class="btn btn-small login-btn ci-link" data-href="/html/user/login.html?source=">登录</button>
                 </div>
                 <div class="control-module can-not-view-marked">
                     <em><i></i>换一个账号登录？</em>
-                    <button class="btn btn-small login-btn" data-href="/html/user/login.html?source=">登录</button>
+                    <button class="btn btn-small login-btn ci-link" data-href="/html/user/login.html?source=">登录</button>
                 </div>
                 <!--<div class="control-module">
                     <em><i></i>未认证投资人</em>
@@ -538,7 +531,7 @@
             <div class="page-action">
                 <div class="btn-group">
                     <button id="follow-btn" class="btn btn-small white-border">关注</button>
-                    <button id="send-investment-btn" class="btn btn-small orange" data-href="/vc/" data-test-mode-href="/dist/investor/send_investment.html?test_mode=1&comid=12813761">发送投资意向</button>
+                    <button id="send-investment-btn" class="btn btn-small orange ci-link" data-href="/vc/" data-test-mode-href="/dist/investor/send_investment.html?test_mode=1&comid=12813761">发送投资意向</button>
                 </div>
             </div>
         </div>
