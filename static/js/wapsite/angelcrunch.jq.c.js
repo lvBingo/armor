@@ -6,6 +6,14 @@
 /*
 /*/
 
+// Page Settings
+var page = window.page || {};
+page.settings = {
+    AjaxDomain: "mobile.tonghs.me",
+    loginPageURL: "/html/user/login.html" + "?source="
+}
+
+
 // Native language prototype chain extensions
 String.prototype.trim = function () {
     return this.replace(/(^\s*)|(\s*$)/g, '');
@@ -117,6 +125,9 @@ $.Angelcrunch.dataSet = $.Angelcrunch.dataSet || {};
         getComid: function () {
             return this.getQueryString("comid") || "";
         },
+        getUserId: function () {
+            return this.getQueryString("userid") || "";
+        },
         getDetailsPageDomainURL: function () {
             var domain = location.host.match(/.+\.(.+\.[a-zA-Z0-9]+)/);
             return domain ? location.protocol+"//" + domain[0] : "";
@@ -215,7 +226,7 @@ $.Angelcrunch.Utilities.back2top = function () {
 };
 
 $.Angelcrunch.Utilities.hidden2Visible = function () {
-    $(".hidden2Visible").show();
+    $(".hidden2Visible").removeClass("hidden2Visible");
 };
 
 $.Angelcrunch.Utilities.changeTitleTxt = function (str) {
@@ -272,7 +283,8 @@ $.Angelcrunch.Utilities.dialogueConfirm = function () {
             if ($image.length && $image.attr("src") && !ignoreImg) {
                 _imgManipulation($image, options);
             };
-            measure += $(this).outerWidth();
+            measure += $(this).outerWidth(true);
+            console.log(measure);
         });
 
         if (measure > globeWidth) {
