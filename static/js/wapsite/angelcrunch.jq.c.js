@@ -18,6 +18,9 @@ page.settings = {
 String.prototype.trim = function () {
     return this.replace(/(^\s*)|(\s*$)/g, '');
 };
+String.prototype.attrRetrievalMode = function () {
+    return "[" + this + "]";
+};
 String.prototype.keepDigital = function () {
     return this.replace(/\D/g, "");
 };

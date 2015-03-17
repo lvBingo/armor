@@ -101,10 +101,7 @@
                     crop_data: "data-crop",
                     palyground_id:"data-playground-bind",
 
-                    disabled: "disabled",
-                    Retrieval: function (str) {
-                        return "[" + str + "]";
-                    }
+                    disabled: "disabled"
                 };
 
                 var $input = {
@@ -128,7 +125,7 @@
                 var checkActive = (function () {
                     var formChecked = function (showNotification) {
                         var canSubmit = true;
-                        $(attr.Retrieval(attr.txt)).each(function () {
+                        $(attr.txt.attrRetrievalMode()).each(function () {
                             var txt, image_id;
                             txt = $(this).attr(attr.txt),
                             image_id = $(this).attr(attr.image_id);
@@ -384,7 +381,7 @@
             </div>
 
             <div class="addition-agreement">
-                <p>我已知晓 <a href="http://static.angelcrunch.com/agreement.pdf" target="_blank" data-confirm-dialogue="你确定要跳转至《天使汇在线投资服务协议》页面吗?">《天使汇在线投资服务协议》</a> 及其附件 <a href="/html/user/agreement/risk_agreement.html" target="_blank" data-confirm-dialogue="你确定要跳转至《风险揭示书》页面吗?">《风险揭示书》</a> 中的所有内容 ，并愿意自己承担投资带来的风险。</p>
+                <p>我已知晓 <a href="http://static.angelcrunch.com/agreement.pdf" target="_blank" data-confirm-dialogue="你确定要跳转至《天使汇在线投资服务协议》页面吗?">《天使汇在线投资服务协议》</a> 及其附件 <a class="ci-link" href="/html/user/agreement/risk_agreement.html" target="_blank" data-confirm-dialogue="你确定要跳转至《风险揭示书》页面吗?">《风险揭示书》</a> 中的所有内容 ，并愿意自己承担投资带来的风险。</p>
                 <div class="modules">
                     <div class="mentos-container">
                         <label class="label">
@@ -399,7 +396,7 @@
                     </div>
                 </div>
             </div>
-            <button id="subbmit-btn" class="btn submit-btn" data-redirect="/html/state_pages/investor_registration_success.html"></button>
+            <button id="subbmit-btn" class="btn submit-btn ci-link" data-redirect="/html/state_pages/investor_registration_success.html"></button>
         </div>
         <div class="banner-footer">
             <p>AngelCrunch.com</p>
