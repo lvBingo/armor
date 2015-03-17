@@ -62,6 +62,7 @@
                 },
                 current_mobile: ""
             };
+
             var waste_9839213 = function () {
                 var className = {
                     input: {
@@ -99,11 +100,10 @@
                     prev_file: "data-prev-file",
                     crop_data: "data-crop",
                     palyground_id:"data-playground-bind",
-                    disabled: "disabled",
-                    Retrieval: function (str) {
-                        return "[" + str + "]";
-                    }
+
+                    disabled: "disabled"
                 };
+
                 var $input = {
                     user_name: $(className.input.user_name),
                     phone: $(className.input.phone),
@@ -116,6 +116,7 @@
                     SMS: $(className.btn.SMS),
                     submit: $(className.btn.submit)
                 };
+
                 var $avatar, $notification;
                 $avatar = $(className.avatar),
                 $notification = $(className.notification);
@@ -124,10 +125,11 @@
                 var checkActive = (function () {
                     var formChecked = function (showNotification) {
                         var canSubmit = true;
-                        $(attr.Retrieval(attr.txt)).each(function () {
+                        $(attr.txt.attrRetrievalMode()).each(function () {
                             var txt, image_id;
                             txt = $(this).attr(attr.txt),
                             image_id = $(this).attr(attr.image_id);
+
                             if ((image_id == "")
                                 || ($(this).is(":checkbox")
                                     && !$(this).is(":checked"))
@@ -139,6 +141,7 @@
                             }
                         });
                         if (!canSubmit) return canSubmit;
+
                         if ($input.pwd.val().length < 6) {
                             if (showNotification)
                                 $notification.notificationToggle($input.pwd.attr(attr.txt));
@@ -155,11 +158,13 @@
                         console.log(canSubmit);
                         return canSubmit;
                     };
+
                     return function (showNotification) {
                         if (formChecked(showNotification)) $btn.submit.addClass(state.active);
                         else $btn.submit.removeClass(state.active);
                     };
                 }).call(this);                        // Check the button can be Active Ended
+
                 // SMS initi
                 (function () {
                     var conf = $.Angelcrunch.SMS_Verify.settings;
@@ -168,8 +173,10 @@
                     conf.$notification = $notification;
                     conf.Ajax.Ajax_SMS = I.Ajax_SMS;
                     conf.Ajax.Ajax_verify_code = I.Ajax_verify_code;
+
                     $.Angelcrunch.SMS_Verify.init(checkActive);
                 }).call(this);
+
                 // Submit button
                 $btn.submit.click(function () {
                     checkActive(true);
@@ -182,10 +189,12 @@
                         _data[$input.pwd.attr("name")] = $input.pwd.val().trim();
                         _data[$input.phone.attr("name")] = $input.phone.val().trim();
                         _data[$input.verify_code.attr("name")] = $input.verify_code.val().trim();
+
                         _data["logo"] = $avatar.attr(attr.image_id);
                         _data["crop"] = $avatar.attr(attr.crop_data);
                         _data["id_card"] = $btn.id_card.attr(attr.image_id);
                         _data["name_card"] = $btn.name_card.attr(attr.image_id) || 0;
+
                         $.post(url, _data, function (data) {
                             if (data.success) {
                                 location.href = $btn.submit.attr("data-redirect");
@@ -195,6 +204,7 @@
                     };
                     return false;
                 });
+
                 (function () {                      // About Password Operation
                     var $eye = $input.pwd.closest("label").find(".eye");
                     // Mobile
@@ -213,36 +223,48 @@
                     }).mousemove(function () {
                         $input.pwd.attr("type", "password");
                     });
+
                     $input.pwd.focus(function () {
                         $(this).attr("type", "password");
                     });
                 }).call(this);
+
+
+
                 $(".registration input").not("#verify-code,.hidden").keyup(function () {
                     checkActive();
                 });
+
                 $("#legal-terms").change(function () {
                     checkActive();
                 });
+
                 $.Angelcrunch.ImageUploadInit(checkActive);
+
                 // Page load ready checked
                 checkActive();
             }
+
             return {
                 attackEvent: function () {
                    waste_9839213();
                 },
+
                 pageLoad_Init: function () {
                 },
+
                 initial: function () {
                     this.pageLoad_Init();
                     this.attackEvent();
                 }
             };
         })();
+
         page.initialBridge = function () {
             var o = new page.MethodObj();
             o.initial();
         }
+
         $(function () {
             page.initialBridge();
         })
@@ -359,7 +381,7 @@
             </div>
 
             <div class="addition-agreement">
-                <p>我已知晓 <a href="http://static.angelcrunch.com/agreement.pdf" target="_blank" data-confirm-dialogue="你确定要跳转至《天使汇在线投资服务协议》页面吗?">《天使汇在线投资服务协议》</a> 及其附件 <a href="/html/user/agreement/risk_agreement.html" target="_blank" data-confirm-dialogue="你确定要跳转至《风险揭示书》页面吗?">《风险揭示书》</a> 中的所有内容 ，并愿意自己承担投资带来的风险。</p>
+                <p>我已知晓 <a href="http://static.angelcrunch.com/agreement.pdf" target="_blank" data-confirm-dialogue="你确定要跳转至《天使汇在线投资服务协议》页面吗?">《天使汇在线投资服务协议》</a> 及其附件 <a class="ci-link" href="/html/user/agreement/risk_agreement.html" target="_blank" data-confirm-dialogue="你确定要跳转至《风险揭示书》页面吗?">《风险揭示书》</a> 中的所有内容 ，并愿意自己承担投资带来的风险。</p>
                 <div class="modules">
                     <div class="mentos-container">
                         <label class="label">
@@ -374,7 +396,7 @@
                     </div>
                 </div>
             </div>
-            <button id="subbmit-btn" class="btn submit-btn" data-redirect="/angel_vip_success"></button>
+            <button id="subbmit-btn" class="btn submit-btn ci-link" data-redirect="/html/state_pages/investor_registration_success.html"></button>
         </div>
         <div class="banner-footer">
             <p>AngelCrunch.com</p>
