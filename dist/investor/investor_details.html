@@ -255,8 +255,8 @@
                 </ul>
             </div>
         </div>
-        <div class="fund-paln">
-            <ul class="plan">
+        <div ms-if="data.user" class="fund-paln">
+            <ul class="plan" ms-if="data.user.count">
                 <li>
                     <i></i>
                     <div class="desc">
@@ -293,36 +293,37 @@
                 <h1>我的项目</h1>
                 <div class="section-list">
                     <section>
-                        <h3>一般投资人</h3>
-                        <p>没有天使投资经验，初涉TMT领域，或投资过项目但未超过<i>10万</i>（需要上传资产证明）。</p>
+                        <div class="logo">
+                            <div class="hide-border"></div>
+                            <img src="/static/images/wapsite/129837123987.jpg" />
+                        </div>
+                        <h3>嘀嘀打车</h3>
+                        <div class="tag">已提交</div>
+                    </section>
+                    <section class="active">
+                        <div class="logo">
+                            <div class="hide-border"></div>
+                            <img src="/static/images/wapsite/1283712387.jpg" />
+                        </div>
+                        <h3>健康防火墙</h3>
+                        <div class="tag">已提交</div>
                     </section>
                     <section>
-                        <h3>经验投资人</h3>
-                        <p>有TMT行业<i>10万起</i>天使投资经验。需要上传<i>投资证明</i>，如<i>加盖公章</i>的投资协议或章程。</p>
-                    </section>
-                    <section>
-                        <h3>价值投资人</h3>
-                        <p>有过多次（<i>3次以上</i>）天使投资经验，或有强大TMT领域资源，或能提供其他创业支持资源（如技术、教育、法律等）。</p>
-                    </section>
-                </div>
-            </div>
-            <div class="e-block">
-                <h1>机构</h1>
-                <div class="section-list">
-                    <section data-triggered-layer=".d2398712">
-                        <h3>一般机构</h3>
-                        <p>投资机构、公司机构。</p>
-                    </section>
-                    <section data-triggered-layer=".e1238233">
-                        <h3>直通机构</h3>
-                        <p>基金业协会备案登记的私募股权基金免审，但要提供证明。</p>
+                        <div class="logo">
+                            <div class="hide-border"></div>
+                            <img src="/static/images/wapsite/129837892173.jpg" />
+                        </div>
+                        <h3>迈卡车生活</h3>
+                        <div class="tag">已提交</div>
                     </section>
                 </div>
             </div>
             <div class="submit-area">
-                <p>未合投项目每天可向3人提交</p>
-                <p>在电脑上完善项目信息后即可加速审核，通过后可升级至5人</p>
-                <button class="btn submit-btn"></button>
+                <div class="summary">
+                    <p>未合投项目每天可向3人提交</p>
+                    <p>在电脑上完善项目信息并申请快速合投，通过后可升级至5人</p>
+                </div>
+                <button class="btn submit-btn submit-item ">提交<em>（该项目今日剩余<i>3</i>次）</em></button>
             </div>
         </div>
     </div>
