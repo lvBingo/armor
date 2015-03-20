@@ -63,8 +63,10 @@
                 _data["uid"] = uid;
                 _data["access_token"] = access_token;
 
+                $("#join-sd-area").hide();
                 $.post(url, _data, function (data) {
                     if (data.is_reg) $("#join-sd").addClass("disable").text(txt);
+                    if (data.can_reg) $("#join-sd-area").show();
                 }, type);
             };
 
@@ -141,7 +143,7 @@
                 </li>
             </ul>
         </div>
-        <div class="btn-container">
+        <div id="join-sd-area" class="btn-container">
             <button id="join-sd" class="btn ci-link" data-redirect="301815_success.html">报名参加第7期闪投</button>
         </div>
         <div class="stars">
