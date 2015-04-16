@@ -447,6 +447,14 @@ input::-webkit-input-placeholder {
   background-color:transparent;
 }
 
+.btn-group.center {
+  text-align:center;
+}
+
+.btn-group.center .btn.white-border {
+  float:none;
+}
+
 .btn-group .btn.orange {
   color:#FFF;
   line-height:26px;
