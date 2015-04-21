@@ -11,16 +11,8 @@ $.Angelcrunch = $.Angelcrunch || {};
 
 // iOS and Android Browser
 (function () {
-    var ua = navigator.userAgent.toLowerCase();
     var $COOKIE = $.Angelcrunch.COOKIE;
-    var Browser = {
-        isAndorid: ua.indexOf("android") != -1 ? 1 : 0,
-        isiOS: !!ua.match(/\(i[^;]+;( u;)? cpu.+mac os x/),
-        isiPhone: ua.indexOf('iphone') > -1 || ua.indexOf('mac') > -1,
-        isiPad: ua.indexOf('ipad') > -1,
-
-        isWeChat: ua.indexOf("micromessenger") != -1 ? 1 : 0
-    };
+    var Browser = $.Angelcrunch.BROWSER;
 
     var CreateAppBanner = function () {
         var $body = $("body");

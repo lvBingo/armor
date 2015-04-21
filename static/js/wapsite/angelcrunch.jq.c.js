@@ -55,8 +55,8 @@ window.txt2html = function (txt) {
 
 
 // 监测整个页面的click事件，如果事件源是数组中的值，那么将不会执行fn方法
-$.documentClick = function (arr, fn) {
-    $(document).mousedown(function (e) {
+(function () {
+    var runFn = function (e, arr, fn) {
         var target = e.target;
         var end = false;
         for (var i in arr) {
@@ -71,9 +71,20 @@ $.documentClick = function (arr, fn) {
         }
         if (fn)
             fn();
-    })
-}
+    };
 
+    $.documentClick = function (arr, fn) {
+        var Browser = $.Angelcrunch.BROWSER;
+        if (Browser.isAndorid || Browser.isiOS)
+            $(document)[0].addEventListener('touchend', function (e) {
+                runFn(e, arr, fn);
+            }, false);
+        else
+            $("body").mousedown(function (e) {
+                runFn(e, arr, fn);
+            });
+    };
+}).call(this);
 
 // Angelcrunch namespace
 $.Angelcrunch = $.Angelcrunch || {};
@@ -225,6 +236,18 @@ $.fn.ReplacedVSHalfWidthSymbols = function (onlyText) {
     var htm = $(this).html().replace(/，/g, ", ").replace(/：/g, ": ").replace(/；/g, "; ");
     $(this).html(htm);
 };
+
+(function () {
+    var ua = navigator.userAgent.toLowerCase();
+    $.Angelcrunch.BROWSER = {
+        isAndorid: ua.indexOf("android") != -1 ? 1 : 0,
+        isiOS: !!ua.match(/\(i[^;]+;( u;)? cpu.+mac os x/),
+        isiPhone: ua.indexOf('iphone') > -1 || ua.indexOf('mac') > -1,
+        isiPad: ua.indexOf('ipad') > -1,
+
+        isWeChat: ua.indexOf("micromessenger") != -1 ? 1 : 0
+    };
+}).call(this);
 
 /********************
        Utilities
@@ -389,6 +412,7 @@ $.Angelcrunch.notificationInit = function () {
         });
 
         var arr = [
+            ".head .options",
             ".head .options span",
             ".head .options .hidden-menu",
             ".head .options .hidden-menu li"
