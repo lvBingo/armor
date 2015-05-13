@@ -35,11 +35,34 @@
     <script src="/static/js/lib/jquery-1.11.1.min.js"></script>
     <script src="/static/js/wapsite/angelcrunch.jq.c.js"></script>
     <script src="/static/js/wapsite/angelcrunch.cookie.jq.c.js"></script>
+    <script src="/static/js/wapsite/angelcrunch.sendsms_verify.jq.c.js"></script>
+
     <script type="text/javascript" id="page-interactive-init">
         var page = window.page || {};
         page.MethodObj = function () { };
         page.MethodObj.prototype = (function () {
+            var settings = page.settings;
             var I = {
+                Ajax_SMS: {                     // Short message service
+                    url: "http://" + settings.AjaxDomain + "/v2/home/m_verify_code",
+                    basic_data: {
+                    }
+                },
+                Ajax_verify_code: {             // Checked verify code
+                    url: "http://" + settings.AjaxDomain + "/v2/home/verify_phone_code",
+                    basic_data: {
+                    }
+                },
+                Ajax_reset_pwd: {             // Reset pwd
+                    url: "http://" + settings.AjaxDomain + "/v2/home/password_reset",
+                    basic_data: {
+                    }
+                },
+                Ajax_send_email: {             // Sned email
+                    url: "http://" + settings.AjaxDomain + "/v2/home/password_reset_email",
+                    basic_data: {
+                    }
+                },
                 Ajax_login: {                     // Login service
                     url: "http://mobile.tonghs.me/v2/home/login",
                     basic_data: {
@@ -49,13 +72,13 @@
             };
 
             var waste_9839213 = function () {
-                var className={
+                var className = {
                     account: "#account",
                     pwd: "#pwd",
                     btn: "#subbmit-btn",
-                    notification:".notification",
+                    notification: ".notification.red",
                     // state
-                    active:"active"
+                    active: "active"
                 };
                 var $account, $pwd, $btn;
                 var $notification;
@@ -91,7 +114,7 @@
                                 $.Angelcrunch.COOKIE.operation.setUserKey();
                                 location.href = $.Angelcrunch.url.getSource() || "/";
                             } else if (data.success == false)
-                                $notification.notificationToggle();
+                                $notification.notificationToggle("登录名和密码不匹配");
                             else
                                 throw new Error("An unknown error, the error code is E821928234");
                         }, type);
@@ -108,14 +131,271 @@
                 });
                 // Page load ready checked
                 checkActive();
-            }
+            };
+
+            var waste_123897123 = function () {
+                var className = {
+                    main_page: ".details",
+                    find_pwd_btn:"#find-pwd",
+                    find_type_page:"#find-type",
+                    new_page: ".new-page",
+                    perv_page: ".float-left.prev-page",
+                },
+                state = {
+                    submit_btn:"submit-btn",
+                    center:"center",
+                    active: "active"
+                },
+                attr = {
+                    main_page_scroll_top: "data-page-scroll",
+                    page_trigger: "data-page-trigger"
+                };
+
+                $(className.new_page).each(function () {
+                    var $this_page = $(this),
+                        _trigger = $(this).attr(attr.page_trigger);
+                    $(_trigger).click(function () {
+                        if ($(this).hasClass(state.submit_btn))
+                            if ($(this).hasClass(state.active))
+                                $this_page.addClass(state.center);
+                            else
+                                return 0;
+                        else
+                            $this_page.addClass(state.center);
+                    });
+
+                    $(this).find(className.perv_page).click(function () {
+                        $this_page.removeClass(state.center);
+                    })
+                });
+
+                $("#investortype").click(function () {
+                    $(window).attr(attr.main_page_scroll_top, $(window).scrollTop());
+                    $(className.main_page).delay(300).fadeOut(200);
+                });
+
+                $(className.find_type_page).find(className.perv_page)
+                .click(function () {
+                    $(className.main_page).stop(true).fadeIn(1);
+                    $(window).scrollTop($(window).attr(attr.main_page_scroll_top));
+                });
+            };
+            
+            var waste_0912831283 = function () {
+                var className = {
+                    phone: "#phone",
+                    SMS_btn: "#verify-btn",
+                    verify_code: "#verify-code",
+                    page:{
+                        verify_phone: "#page-verify-phone",
+                        verify_mail: "#page-verify-mail",
+                        reset_pwd: "#page-reset-pwd"
+                    },
+                    pwd1: "#new-pwd",
+                    pwd2: "#confirm-pwd",
+                    mail: "#mail",
+                    submit_btn: ".submit-btn",
+                    notification: ".notification.red"
+                },
+                state = {
+                    disable: "disable",
+                    center: "center",
+                    active: "active"
+                },
+                attr = {
+                    disabled: "disabled",
+                    txt: "data-warning-text"
+                };
+
+                var $input = {
+                    phone: $(className.phone),
+                    verify_code: $(className.verify_code),
+                    pwd1: $(className.pwd1),
+                    pwd2: $(className.pwd2),
+                    mail: $(className.mail)
+                }, $btn = {
+                    SMS: $(className.SMS_btn),
+                };
+
+                var $notification = $(className.notification);
+                var phone_verify = {
+                    token: "",
+                    user_id: ""
+                }
+
+                // Check the button can be Active
+                var checkActive = {
+                    verify_phone_page: (function () {
+                        var formChecked = function (showNotification) {
+                            var canSubmit = true;
+                            
+                            if (!($input.phone.val()
+                                && $btn.SMS.hasClass(state.disable)
+                                && $input.verify_code.val()
+                                && $input.verify_code.attr(attr.disabled))) {
+                                if (showNotification)
+                                    $notification.notificationToggle($input.verify_code.attr(attr.txt));
+                                canSubmit = false;
+                            }
+                            return canSubmit;
+                        };
+
+                        return function (data, showNotification) {
+                            if (data && data.success) {
+                                phone_verify.token = data.token;
+                                phone_verify.user_id = data.user_id;
+                            };
+                            var btn = $(className.page.verify_phone).find(className.submit_btn);
+                            if (formChecked(showNotification)) btn.addClass(state.active);
+                            else btn.removeClass(state.active);
+                        };
+                    }).call(this),
+
+                    reset_pwd_page: (function () {
+                        var formChecked = function (showNotification) {
+                            var canSubmit = true;
+                            var $this_page = $(className.page.reset_pwd);
+                            $this_page.find(":text").each(function () {
+                                if (!$(this).val()) {
+                                    if (showNotification)
+                                        $notification.notificationToggle($(this).attr(attr.txt));
+                                    canSubmit = false;
+                                    return canSubmit;
+                                }
+                                else if ($(this).val().length < 6) {
+                                    if (showNotification)
+                                        $notification.notificationToggle("密码长度须大于6位");
+                                    canSubmit = false;
+                                    return canSubmit;
+                                }
+                            });
+                            if ($input.pwd1.val() != $input.pwd2.val()) { 
+                                if (showNotification)
+                                    $notification.notificationToggle($input.pwd2.attr(attr.txt));
+                                canSubmit = false;
+                            }
+                            return canSubmit;
+                        };
+
+                        return function (showNotification) {
+                            var btn = $(className.page.reset_pwd).find(className.submit_btn);
+                            if (formChecked(showNotification)) btn.addClass(state.active);
+                            else btn.removeClass(state.active);
+                        };
+                    }).call(this),
+
+                    verify_mail_page: (function () {
+                        var formChecked = function (showNotification) {
+                            var canSubmit = true;
+                            var $this_page = $(className.page.verify_mail);
+                            $this_page.find(":text").each(function () {
+                                if (!$(this).val()) {
+                                    if (showNotification)
+                                        $notification.notificationToggle($(this).attr(attr.txt));
+                                    canSubmit = false;
+                                    return canSubmit;
+                                }
+                            });
+                            return canSubmit;
+                        };
+
+                        return function (showNotification) {
+                            var btn = $(className.page.verify_mail).find(className.submit_btn);
+                            if (formChecked(showNotification)) btn.addClass(state.active);
+                            else btn.removeClass(state.active);
+                        };
+                    }).call(this)
+                };                        // Check the button can be Active Ended
+                
+                // SMS initi
+                (function () {
+                    var conf = $.Angelcrunch.SMS_Verify.settings;
+                    conf.$btn = $btn;
+                    conf.$input = $input;
+                    conf.$notification = $notification;
+                    conf.Ajax.Ajax_SMS = I.Ajax_SMS;
+                    conf.Ajax.Ajax_verify_code = I.Ajax_verify_code;
+
+                    $.Angelcrunch.SMS_Verify.init(checkActive.verify_phone_page);
+                }).call(this);
+
+                $(className.page.verify_phone).find(className.submit_btn).click(function () {
+                    checkActive.verify_phone_page(false, true);
+                });
+
+                $(className.page.reset_pwd).find(className.submit_btn).click(function () {
+                    checkActive.reset_pwd_page(true);
+                    if ($(this).hasClass(state.active)) {
+                        var url = I.Ajax_reset_pwd.url,
+                            basic_data = I.Ajax_reset_pwd.basic_data,
+                                  type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        _data[$input.pwd1.attr("name")] = $input.pwd1.val();
+                        _data[$input.pwd2.attr("name")] = $input.pwd2.val();
+                        _data["token"] = phone_verify.token;
+                        _data["user_id"] = phone_verify.user_id;
+
+                        $.post(url, _data, function (data) {
+                            if (data.success) {
+                                $(".notification.green").notificationToggle("密码修改成功, 稍后将返回登录页面");
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 3000);
+                            } else if (data.success == false)
+                                $notification.notificationToggle(data.message);
+                            else
+                                throw new Error("An unknown error, the error code is E821928234");
+                        }, type);
+                    }
+                });
+
+                $(className.page.reset_pwd).find(":text").keyup(function () {
+                    checkActive.reset_pwd_page();
+                });
+                
+                $(className.page.verify_mail).find(className.submit_btn).click(function () {
+                    var $this_btn = $(this);
+
+                    checkActive.verify_mail_page(true);
+                    if ($(this).hasClass(state.active)) {
+                        var url = I.Ajax_send_email.url,
+                            basic_data = I.Ajax_send_email.basic_data,
+                                  type = "jsonp";
+                        var _data = $.extend(true, {}, basic_data);
+                        _data[$input.mail.attr("name")] = $input.mail.val();
+
+                        $.post(url, _data, function (data) {
+                            if (data.success)
+                                $("#np-fp-verify-email").addClass(state.center);
+                            else
+                                $notification.notificationToggle(data.message);
+                        }, type);
+                    }
+                });
+
+                $(className.page.verify_mail).find(":text").keyup(function () {
+                    checkActive.verify_mail_page();
+                });
+            };
+
+            var waste_123871231 = function () {
+                var reg = /find_type_page/gi;
+                if (reg.test(location.href))
+                    $("#investortype").click();
+            };
 
             return {
                 attackEvent: function () {
                     waste_9839213();
+                    waste_0912831283();
+                    waste_123897123();
+                    waste_123871231();
                 },
 
                 pageLoad_Init: function () {
+                    $("#to-login-page").click(function () {
+                        location.reload();
+                    })
                 },
 
                 initial: function () {
@@ -136,11 +416,12 @@
     </script>
 </head>
 <body>
+    <div class="notification green"><i class="txt"></i><i class="close">×</i></div>
+    <div class="notification red"><i class="txt"></i><i class="close">×</i></div>
     <div class="details">
         <div class="angelcrunch-brand">
             <img src="/static/images/wapsite/angelcrunchbrandlogoinloginpage.png" />
         </div>
-        <div class="notification red">登录名和密码不匹配 <i class="close">×</i></div>
         <div class="login-module">
             <!-- Back-up form -->
             <form action="/" method="post">
@@ -149,9 +430,120 @@
                 <button id="subbmit-btn" class="btn submit-btn"></button>
             </form>
         </div>
+        <div id="find-pwd" class="find-pwd"><i id="investortype">找回密码</i></div>
         <div class="banner-footer">
             <p>AngelCrunch.com</p>
             <p>天使汇 - 让靠谱的项目找到靠谱的钱</p>
+        </div>
+    </div>
+
+    <div id="find-type" class="new-page" data-page-trigger="#investortype">
+        <div class="title-container">
+            <p class="float-left prev-page" data-route-path="?pageselect=mainpage"><i class="vector-icons arrow-up-bold"></i>返回</p>
+            <p class="title">选择找回方式</p>
+        </div>
+        <div class="selection">
+            <div class="e-block">
+                <h1>选择找回方式</h1>
+                <div class="section-list">
+                    <section id="via-phone">
+                        <h3><i class="vector-icons phone"></i>验证手机找回密码</h3>
+                    </section>
+                    <section id="via-mail">
+                        <h3><i class="vector-icons mail-open"></i>验证邮箱找回密码</h3>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-verify-phone" class="new-page white-style" data-page-trigger="#via-phone">
+        <div class="title-container">
+            <p class="float-left prev-page" data-route-path="?pageselect=mainpage"><i class="vector-icons arrow-up-bold"></i>返回</p>
+            <p class="title">手机验证</p>
+        </div>
+        <div class="selection">
+            <div class="e-block">
+                <div class="form-module">
+                    <label>
+                        <span>手机号码</span>
+                        <i>
+                            <input id="phone" type="tel" name="phone" value="" data-warning-text="需要填写11位的大陆手机号码" maxlength="11"/>
+                            <button id="verify-btn" class="btn">验证</button>
+                        </i>
+                    </label>
+
+                    <label>
+                        <span>输入短信验证码</span>
+                        <i><input id="verify-code" type="tel" name="code" value="" maxlength="6" data-warning-text="手机号码需要通过验证" placeholder="发送验证后填写6位验证码" /></i>
+                    </label>
+                </div>
+                <button id="np-fp-verify-phone" class="btn submit-btn show-reset-pwd"></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-reset-pwd" class="new-page white-style" data-page-trigger=".show-reset-pwd">
+        <div class="title-container">
+            <p class="float-left prev-page" data-route-path="?pageselect=mainpage"><i class="vector-icons arrow-up-bold"></i>返回</p>
+            <p class="title">重置密码</p>
+        </div>
+        <div class="selection">
+            <div class="e-block">
+                <div class="form-module">
+                    <label>
+                        <span>新密码</span>
+                        <i>
+                            <input id="new-pwd" type="text" name="password" value="" data-warning-text="需要输入您的新密码" maxlength="16" placeholder="密码长度为6-16个字符" />
+                        </i>
+                    </label>
+                    <label>
+                        <span>确认密码</span>
+                        <i>
+                            <input id="confirm-pwd" type="text" name="password1" value="" data-warning-text="两次密码填写不一致" maxlength="16" placeholder="密码长度为6-16个字符" />
+                        </i>
+                    </label>
+                </div>
+                <button id="np-fp-reset-pwd" class="btn submit-btn"></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-verify-mail" class="new-page white-style" data-page-trigger="#via-mail">
+        <div class="title-container">
+            <p class="float-left prev-page" data-route-path="?pageselect=mainpage"><i class="vector-icons arrow-up-bold"></i>返回</p>
+            <p class="title">邮箱验证</p>
+        </div>
+        <div class="selection">
+            <div class="e-block">
+                <div class="form-module">
+                    <label>
+                        <span>邮箱账号</span>
+                        <i>
+                            <input id="mail" type="text" name="email" value="" data-warning-text="需要填写您预留的邮箱" placeholder="填写您预留的邮箱" />
+                        </i>
+                    </label>
+                </div>
+                <button class="btn submit-btn"></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="np-fp-verify-email" class="new-page white-style">
+        <div class="title-container">
+            <p class="float-left prev-page" data-route-path="?pageselect=mainpage"><i class="vector-icons arrow-up-bold"></i>返回</p>
+            <p class="title">邮箱验证</p>
+        </div>
+        <div class="statement">
+            <div class="success-desc">
+                <h1>验证邮件已发到您的邮箱中</h1>
+                <p>请点击邮件中的蓝色按钮重置您的密码。</p>
+            </div>
+            <div class="control-module">
+                <div class="btn-module">
+                    <button id="to-login-page" class="btn black">返回登录页面</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>

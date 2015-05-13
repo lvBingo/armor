@@ -48,7 +48,7 @@ $.Angelcrunch.SMS_Verify.settings = {
     $notification: ""
 };
 
-$.Angelcrunch.SMS_Verify.init = function (formChecked_fn) {
+$.Angelcrunch.SMS_Verify.init = function (suc_callback) {
     var settings = $.Angelcrunch.SMS_Verify.settings;
     var verify_code_len = settings.verify_code_len;
     var txt = settings.txt,
@@ -107,7 +107,7 @@ $.Angelcrunch.SMS_Verify.init = function (formChecked_fn) {
                     $input.verify_code.attr(attr.disabled, attr.disabled);
                     $btn.SMS.text(txt.btn.pass).addClass(state.disable).removeClass(state.again + " " + state.checking);
                     I.current_mobile = $input.phone.val();
-                    formChecked();
+                    verifyCodeSucCallback(data);
                 }
                 else
                     $notification.notificationToggle(data.message);
@@ -162,8 +162,8 @@ $.Angelcrunch.SMS_Verify.init = function (formChecked_fn) {
             $btn.SMS.removeClass(state.disable).addClass(state.again);
     }
 
-    var formChecked = function () {
-        if (formChecked_fn) formChecked_fn();
+    var verifyCodeSucCallback = function (data) {
+        if (suc_callback) suc_callback(data);
     };
 
 

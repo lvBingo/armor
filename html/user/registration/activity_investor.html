@@ -89,7 +89,7 @@
                     loading: "loading",
                     disable: "disable",
                     checking: "checking",
-                    again:"again-js",
+                    again: "again-js",
                     active: "active"
                 },
                 attr = {
@@ -123,14 +123,14 @@
                 var checkActive = (function () {
                     var formChecked = function (showNotification) {
                         var canSubmit = true;
-                        $(attr.txt.attrRetrievalMode()+":visible").each(function () {
+                        $(attr.txt.attrRetrievalMode() + ":visible").each(function () {
                             var txt, image_id, selector_result;
                             txt = $(this).attr(attr.txt),
                             image_id = $(this).attr(attr.image_id),
                             selector_result = $(this).attr(attr.selector_result);
 
                             if ((image_id == "")
-                                || (selector_result=="")
+                                || (selector_result == "")
                                 || ($(this).is(":checkbox")
                                     && !$(this).is(":checked"))
                                 || ($(this).is("input")
@@ -189,12 +189,12 @@
                         $(".registration input:visible").each(function () {
                             _data[$(this).attr("name")] = $(this).val();
                         });
-                        
+
                         _data["crop"] = $avatar.attr(attr.crop_data);
                         $(attr.image_id.attrRetrievalMode() + ":visible").each(function () {
                             _data[$(this).attr("name")] = $(this).attr(attr.image_id);
                         });
-                        
+
                         $.post(url, _data, function (data) {
                             if (data.success) {
                                 location.href = $btn.submit.attr("data-redirect");
@@ -240,10 +240,10 @@
                 });
 
                 $.Angelcrunch.ImageUploadInit(checkActive);
-                
+
                 // Page load ready checked
                 checkActive();
-            }
+            };
 
             var waste_41023823 = function () {
                 var className = {

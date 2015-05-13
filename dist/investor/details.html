@@ -464,7 +464,7 @@
                     <h1>项目大事记</h1>
                     <div class="item" ms-repeat="data.milestone">
                         <p class="date">
-                            <i>{{el.occurdate|date("M.dd")}}</i><em>{{el.occurdate|date("yyyy")}}</em>
+                            <i ms-text="el.M_dd"></i><em ms-text="el.yyyy"></em>
                         </p>
                         <p class="gray" ms-text="el.content"></p>
                     </div>
@@ -473,7 +473,7 @@
                     <h1>成长数据</h1>
                     <div class="item" ms-repeat="data.growthdata">
                         <p class="date">
-                            <i>{{el.occurdate|date("M")}}</i><em>{{el.occurdate|date("yyyy")}}</em>
+                            <i ms-text="el.M"></i><em ms-text="el.yyyy"></em>
                         </p>
                         <p class="gray">{{el.name}}{{el.quantity}}</p>
                     </div>
@@ -482,7 +482,7 @@
                     <h1>新闻</h1>
                     <div ms-repeat="data.news">
                         <p class="date">
-                            <i>{{el.occurdate|date("M.dd")}}</i><em>{{el.occurdate|date("yyyy")}}</em>
+                            <i ms-text="el.M_dd"></i><em ms-text="el.yyyy"></em>
                         </p>
                         <div class="item">
                             <p ms-text="el.title">融资技术推广与合作：Open Garden 的下一步</p>
@@ -530,7 +530,7 @@
                             <p ms-text="el.q"></p>
                         </div>
                         <div class="item" ms-if="el.a">
-                            <p class="title-container"><i>A</i>{{el.a_name}}·项目创始人</p>
+                            <p class="title-container"><i>A</i><em ms-if="el.a_name">{{el.a_name}}·项目创始人</em></p>
                             <p ms-text="el.a"></p>
                         </div>
                     </div>

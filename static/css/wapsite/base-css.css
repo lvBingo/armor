@@ -493,6 +493,20 @@ input::-webkit-input-placeholder {
   background:none;
 }
 
+label i > .btn {
+  width:76px;
+  height:26px;
+  float:right;
+  font-size:14px;
+  padding:1px 10px 0;
+  margin-top:12px;
+  margin-right:16px;
+  border-color:#A9A9A9;
+}
+
+label i > .btn:hover {
+  background:none;
+}
 
 /**********************
      Slider Module
@@ -681,6 +695,28 @@ label > i textarea {
     width:202px;
   }
 }
+
+label > i #phone {
+  width:50%;
+  max-width:180px;
+}
+@media only screen and (max-width: 359px) {
+  label > i #phone {
+    width: 38%;
+    max-width: 180px;
+  }
+}
+
+label > i #pwd {
+  width:50%;
+}
+
+label > i #verify-code {
+  width:50%;
+  margin-left:112px;
+}
+
+
 
 .mentos-container {
   -ms-user-select:none;
@@ -880,6 +916,19 @@ body.footer-close-bottom .banner-footer {
     /*right:0;*/
 }
 
+.new-page.index-1 {
+  z-index:10001;
+}
+
+.new-page.index-2 {
+  z-index:10011;
+}
+
+.new-page.index-3 {
+  z-index:10111;
+}
+
+
 @media only screen and (min-width: 998px) {
   .new-page {
     width:360px;    /* Logic resolution with iPhone6 */
@@ -983,16 +1032,6 @@ body.footer-close-bottom .banner-footer {
 
 .new-page.white-style {
   background:#FFF;
-}
-
-.new-page.white-style .prev-page {
-  display:block;
-  width:28px;
-  height:24px;
-  margin-top:16px;
-  margin-left:4.4%;
-  background: url(/static/images/wapsite/cssimage/arrow-right-black.png) center scroll no-repeat;
-  background-size: 22px;
 }
 
 /************************
@@ -1209,11 +1248,11 @@ body.footer-close-bottom .banner-footer {
 
 @font-face {
   font-family: 'iconfont';
-  src: url('//at.alicdn.com/t/font_1428987787_061766.eot'); /* IE9*/
-  src: url('//at.alicdn.com/t/font_1428987787_061766.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('//at.alicdn.com/t/font_1428987787_061766.woff') format('woff'), /* chrome、firefox */
-  url('//at.alicdn.com/t/font_1428987787_061766.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
-  url('//at.alicdn.com/t/font_1428987787_061766.svg#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('//at.alicdn.com/t/font_1430108144_9526815.eot'); /* IE9*/
+  src: url('//at.alicdn.com/t/font_1430108144_9526815.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('//at.alicdn.com/t/font_1430108144_9526815.woff') format('woff'), /* chrome、firefox */
+  url('//at.alicdn.com/t/font_1430108144_9526815.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url('//at.alicdn.com/t/font_1430108144_9526815.svg#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .vector-icons {
@@ -1256,4 +1295,12 @@ body.footer-close-bottom .banner-footer {
 
 .vector-icons.weibo::before {
   content: "";
+}
+
+.vector-icons.phone::before {
+  content: "";
+}
+
+.vector-icons.mail-open::before {
+  content: "";
 }

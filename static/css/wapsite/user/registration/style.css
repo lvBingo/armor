@@ -129,21 +129,6 @@
   width:90px;
 }
 
-.registration label .btn {
-  width:76px;
-  height:26px;
-  float:right;
-  font-size:14px;
-  padding:1px 10px 0;
-  margin-top:12px;
-  margin-right:16px;
-  border-color:#A9A9A9;
-}
-
-.registration label .btn:hover {
-  background:none;
-}
-
 .details {
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -157,27 +142,6 @@
   line-height:48px;
   margin-right:16px;
   padding:0 8px;
-}
-
-
-#phone {
-  width:50%;
-  max-width:180px;
-}
-@media only screen and (max-width: 359px) {
-  #phone {
-    width: 38%;
-    max-width: 180px;
-  }
-}
-
-#pwd {
-  width:50%;
-}
-
-#verify-code {
-  width:50%;
-  margin-left:112px;
 }
 
 

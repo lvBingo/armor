@@ -8,7 +8,7 @@
 
 // Page Settings
 var page = window.page || {};
-page.HOST = "tonghs.me";
+page.HOST = "diaohongwu.com";
 page.settings = {
     host: page.HOST,
     AjaxDomain: "mobile." + page.HOST,
@@ -135,7 +135,7 @@ $.Angelcrunch.dataSet = $.Angelcrunch.dataSet || {};
         getQueryString: function (name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
             var r = window.location.search.substr(1).match(reg);
-            if (r != null) return unescape(r[2]); return null;
+            if (r != null) return unescape(r[2]); return "";
         },
         getSource: function () {
             return unescape(this.getQueryString("source"));
